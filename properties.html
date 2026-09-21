@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Properties | EstateHub</title>
+  <meta name="description" content="Search and filter verified luxury apartments, villas, penthouses, and commercial plots across India." />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="./index.html" class="logo">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        Estate<span>Hub</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="./index.html">Home</a>
+        <a href="./properties.html" class="active">Properties</a>
+        <a href="./properties.html?type=sale">Buy</a>
+        <a href="./properties.html?type=rent">Rent</a>
+        <a href="./add-property.html">Sell</a>
+        <a href="./contact.html">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="./favorites.html" class="fav-nav-link" title="Saved Wishlist">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="nav-fav-badge">0</span>
+        </a>
+
+        <div class="nav-auth-container"></div>
+
+        <button type="button" class="hamburger-btn" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-overlay"></div>
+  <aside class="mobile-drawer">
+    <div class="mobile-nav-links">
+      <a href="./index.html">Home</a>
+      <a href="./properties.html" class="active">Properties</a>
+      <a href="./properties.html?type=sale">Buy Properties</a>
+      <a href="./properties.html?type=rent">Rent Properties</a>
+      <a href="./add-property.html">Sell / Post Property</a>
+      <a href="./favorites.html">Favorites</a>
+      <a href="./dashboard.html">Dashboard</a>
+      <a href="./contact.html">Contact Us</a>
+    </div>
+    <div class="nav-auth-container" style="margin-top: auto;"></div>
+  </aside>
+
+  <!-- Page Header -->
+  <div style="background-color: #fff; border-bottom: 1px solid var(--border); padding: 2rem 0;">
+    <div class="container">
+      <span class="section-tag" style="margin-bottom: 0.5rem;">Explore Portal</span>
+      <h1 style="font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 0.25rem;">
+        Properties For Sale & Rent
+      </h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Discover verified residential and commercial listings with detailed floor plans, pricing, and amenities.
+      </p>
+    </div>
+  </div>
+
+  <!-- Properties Main Layout -->
+  <main class="container">
+    <div class="listing-page-layout">
+      
+      <!-- Filter Sidebar -->
+      <aside class="filter-sidebar">
+        <div class="filter-header">
+          <h3>Filter Search</h3>
+          <button type="button" id="resetFiltersBtn" class="btn-reset-filter">Reset All</button>
+        </div>
+
+        <!-- Keyword Search -->
+        <div class="filter-section">
+          <label class="filter-section-title" for="filterSearch">Search Keyword</label>
+          <div class="input-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="filterSearch" class="form-control" placeholder="City, title, keyword..." />
+          </div>
+        </div>
+
+        <!-- Listing Type Radio -->
+        <div class="filter-section">
+          <label class="filter-section-title">Listing Type</label>
+          <div style="display: flex; gap: 0.85rem;">
+            <label style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.875rem; font-weight: 600; cursor: pointer;">
+              <input type="radio" name="listingTypeFilter" value="all" checked /> All
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.875rem; font-weight: 600; cursor: pointer;">
+              <input type="radio" name="listingTypeFilter" value="sale" /> Buy (Sale)
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.875rem; font-weight: 600; cursor: pointer;">
+              <input type="radio" name="listingTypeFilter" value="rent" /> Rent
+            </label>
+          </div>
+        </div>
+
+        <!-- City Filter -->
+        <div class="filter-section">
+          <label class="filter-section-title" for="filterCity">City</label>
+          <select id="filterCity" class="form-select">
+            <option value="all">All Cities</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Pune">Pune</option>
+            <option value="Delhi">Delhi NCR</option>
+            <option value="Goa">Goa</option>
+            <option value="Kolkata">Kolkata</option>
+            <option value="Coimbatore">Coimbatore</option>
+          </select>
+        </div>
+
+        <!-- Property Type Filter -->
+        <div class="filter-section">
+          <label class="filter-section-title" for="filterPropType">Property Type</label>
+          <select id="filterPropType" class="form-select">
+            <option value="all">All Property Types</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Villa">Villa</option>
+            <option value="Penthouse">Penthouse</option>
+            <option value="Studio">Studio Flat</option>
+            <option value="Commercial">Commercial Office</option>
+            <option value="Plot">Residential Plot</option>
+          </select>
+        </div>
+
+        <!-- Price Range -->
+        <div class="filter-section">
+          <label class="filter-section-title">Price Range (₹)</label>
+          <div class="price-range-inputs">
+            <input type="number" id="filterMinPrice" class="form-control" placeholder="Min (₹)" step="5000" />
+            <input type="number" id="filterMaxPrice" class="form-control" placeholder="Max (₹)" step="100000" />
+          </div>
+        </div>
+
+        <!-- Bedrooms Filter -->
+        <div class="filter-section">
+          <label class="filter-section-title">Bedrooms</label>
+          <div class="filter-pill-group">
+            <button type="button" class="filter-pill-btn bedroom-btn active" data-value="all">Any</button>
+            <button type="button" class="filter-pill-btn bedroom-btn" data-value="1">1 BHK</button>
+            <button type="button" class="filter-pill-btn bedroom-btn" data-value="2">2 BHK</button>
+            <button type="button" class="filter-pill-btn bedroom-btn" data-value="3">3 BHK</button>
+            <button type="button" class="filter-pill-btn bedroom-btn" data-value="4+">4+ BHK</button>
+          </div>
+        </div>
+
+        <!-- Area Filter -->
+        <div class="filter-section">
+          <label class="filter-section-title">Super Area (sq.ft)</label>
+          <div class="price-range-inputs">
+            <input type="number" id="filterMinArea" class="form-control" placeholder="Min sqft" />
+            <input type="number" id="filterMaxArea" class="form-control" placeholder="Max sqft" />
+          </div>
+        </div>
+
+        <!-- Amenities Multi-Select -->
+        <div class="filter-section">
+          <label class="filter-section-title">Amenities</label>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 180px; overflow-y: auto;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer;">
+              <input type="checkbox" class="amenity-filter-cb" value="Swimming Pool" /> Swimming Pool
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer;">
+              <input type="checkbox" class="amenity-filter-cb" value="Gym" /> Gym / Fitness
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer;">
+              <input type="checkbox" class="amenity-filter-cb" value="Security" /> 24/7 Security
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer;">
+              <input type="checkbox" class="amenity-filter-cb" value="Balcony" /> Balcony
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer;">
+              <input type="checkbox" class="amenity-filter-cb" value="Air Conditioning" /> Air Conditioning
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer;">
+              <input type="checkbox" class="amenity-filter-cb" value="Garden" /> Private Garden
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer;">
+              <input type="checkbox" class="amenity-filter-cb" value="WiFi" /> High Speed WiFi
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer;">
+              <input type="checkbox" class="amenity-filter-cb" value="Parking" /> Covered Parking
+            </label>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Main Results Column -->
+      <section>
+        
+        <!-- Results Top Bar -->
+        <div class="listing-results-header">
+          <div id="resultsCount" class="results-count">
+            Loading properties...
+          </div>
+
+          <div class="listing-sort-controls">
+            <label for="filterSortBy" style="font-size: 0.875rem; font-weight: 600; color: var(--text-muted);">Sort By:</label>
+            <select id="filterSortBy" class="form-select" style="width: auto; padding: 0.5rem 0.85rem; font-size: 0.875rem;">
+              <option value="featured">Featured First</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+              <option value="newest">Newest Listed</option>
+              <option value="area_desc">Largest Area (sq.ft)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Active Filter Tags Bar -->
+        <div id="activeFiltersBar" class="active-filters-bar" style="display: none;"></div>
+
+        <!-- Properties Grid -->
+        <div id="propertiesGrid" class="properties-grid">
+          <!-- Populated dynamically by js/properties.js -->
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="./index.html" class="logo" style="color: #fff;">
+            <div class="logo-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+            </div>
+            Estate<span style="color: #60a5fa;">Hub</span>
+          </a>
+          <p class="footer-desc">
+            India's most trusted real estate discovery portal for luxury apartments, villas, penthouses, and commercial properties.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./properties.html">All Properties</a></li>
+            <li><a href="./properties.html?type=sale">Properties for Sale</a></li>
+            <li><a href="./properties.html?type=rent">Properties for Rent</a></li>
+            <li><a href="./add-property.html">Post Free Listing</a></li>
+            <li><a href="./favorites.html">Saved Wishlist</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Popular Cities</h4>
+          <ul class="footer-links">
+            <li><a href="./properties.html?city=Mumbai">Mumbai Properties</a></li>
+            <li><a href="./properties.html?city=Bangalore">Bangalore Properties</a></li>
+            <li><a href="./properties.html?city=Hyderabad">Hyderabad Properties</a></li>
+            <li><a href="./properties.html?city=Chennai">Chennai Properties</a></li>
+            <li><a href="./properties.html?city=Pune">Pune Properties</a></li>
+            <li><a href="./properties.html?city=Goa">Goa Holiday Homes</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">User Account</h4>
+          <ul class="footer-links">
+            <li><a href="./dashboard.html">Agent Dashboard</a></li>
+            <li><a href="./login.html">Sign In</a></li>
+            <li><a href="./register.html">Register Account</a></li>
+            <li><a href="./contact.html">Customer Support</a></li>
+            <li><a href="javascript:void(0)" onclick="StorageManager.resetToDefaults()">Reset Sample Data</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 EstateHub Real Estate Portal. Built with HTML, CSS, and Vanilla JavaScript.</p>
+        <p>100% LocalStorage Database Simulation</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./js/data.js"></script>
+  <script src="./js/storage.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/app.js"></script>
+  <script src="./js/properties.js"></script>
+</body>
+</html>

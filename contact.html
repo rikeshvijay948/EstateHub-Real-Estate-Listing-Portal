@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us & Support | EstateHub</title>
+  <meta name="description" content="Reach our real estate advisory team, locate regional office hubs, or get answers to frequently asked questions." />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="./index.html" class="logo">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        Estate<span>Hub</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="./index.html">Home</a>
+        <a href="./properties.html">Properties</a>
+        <a href="./properties.html?type=sale">Buy</a>
+        <a href="./properties.html?type=rent">Rent</a>
+        <a href="./add-property.html">Sell</a>
+        <a href="./contact.html" class="active">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="./favorites.html" class="fav-nav-link" title="Saved Wishlist">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="nav-fav-badge">0</span>
+        </a>
+
+        <div class="nav-auth-container"></div>
+
+        <button type="button" class="hamburger-btn" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-overlay"></div>
+  <aside class="mobile-drawer">
+    <div class="mobile-nav-links">
+      <a href="./index.html">Home</a>
+      <a href="./properties.html">Properties</a>
+      <a href="./properties.html?type=sale">Buy Properties</a>
+      <a href="./properties.html?type=rent">Rent Properties</a>
+      <a href="./add-property.html">Sell / Post Property</a>
+      <a href="./favorites.html">Favorites</a>
+      <a href="./dashboard.html">Dashboard</a>
+      <a href="./contact.html" class="active">Contact Us</a>
+    </div>
+    <div class="nav-auth-container" style="margin-top: auto;"></div>
+  </aside>
+
+  <!-- Page Header -->
+  <div style="background-color: #fff; border-bottom: 1px solid var(--border); padding: 3rem 0;">
+    <div class="container text-center" style="text-align: center; max-width: 650px; margin: 0 auto;">
+      <span class="section-tag" style="margin-bottom: 0.5rem;">24/7 Assistance</span>
+      <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">
+        Get in Touch With Us
+      </h1>
+      <p style="color: var(--text-muted); font-size: 1.05rem; margin-top: 0.5rem;">
+        Have questions about a property, scheduling a private site visit, or listing your property? Our senior advisors are here to help.
+      </p>
+    </div>
+  </div>
+
+  <!-- Main Contact Grid -->
+  <main class="container section">
+    <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 3rem; align-items: flex-start;">
+      
+      <!-- Contact Form -->
+      <div class="details-card" style="padding: 2.5rem;">
+        <h2 style="font-size: 1.45rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem;">
+          Send Us a Direct Message
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.9375rem; margin-bottom: 1.5rem;">
+          Fill out the quick form below and our local city specialist will get in touch within 2 business hours.
+        </p>
+
+        <form id="generalContactForm" onsubmit="handleGeneralContact(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label" for="contactName">Your Name <span class="required">*</span></label>
+              <input type="text" id="contactName" class="form-control" placeholder="e.g. Siddharth Oberoi" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contactEmail">Email Address <span class="required">*</span></label>
+              <input type="email" id="contactEmail" class="form-control" placeholder="siddharth@example.com" required />
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label" for="contactPhone">Phone Number <span class="required">*</span></label>
+              <input type="tel" id="contactPhone" class="form-control" placeholder="+91 98201 54321" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contactCity">City of Interest</label>
+              <select id="contactCity" class="form-select">
+                <option value="Mumbai">Mumbai</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Hyderabad">Hyderabad</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Pune">Pune</option>
+                <option value="Delhi">Delhi NCR</option>
+                <option value="Goa">Goa</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contactSubject">Subject</label>
+            <input type="text" id="contactSubject" class="form-control" placeholder="e.g. Inquiry regarding luxury villas in Whitefield" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contactMessage">Your Message / Requirement <span class="required">*</span></label>
+            <textarea id="contactMessage" class="form-textarea" rows="4" placeholder="Tell us your budget, preferred configuration, and ideal move-in timeline..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block">
+            Submit Message
+          </button>
+        </form>
+      </div>
+
+      <!-- Right Column: Regional Hubs -->
+      <div>
+        <div class="details-card" style="padding: 2rem; margin-bottom: 2rem;">
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand);">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            Regional Advisory Hubs
+          </h3>
+
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div style="padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+              <h4 style="font-size: 1rem; font-weight: 700; color: var(--primary);">Mumbai Corporate Office</h4>
+              <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+                Level 14, Tower B, One International Center, Senapati Bapat Marg, Prabhadevi, Mumbai 400013
+              </p>
+              <p style="font-size: 0.85rem; color: var(--brand); font-weight: 600; margin-top: 0.35rem;">
+                📞 +91 98201 54321 | ✉️ mumbai@estatehub.com
+              </p>
+            </div>
+
+            <div style="padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+              <h4 style="font-size: 1rem; font-weight: 700; color: var(--primary);">Bangalore Tech & Innovation Hub</h4>
+              <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+                7th Floor, UB City Concorde Tower, Vittal Mallya Road, Bangalore 560001
+              </p>
+              <p style="font-size: 0.85rem; color: var(--brand); font-weight: 600; margin-top: 0.35rem;">
+                📞 +91 99450 88712 | ✉️ bangalore@estatehub.com
+              </p>
+            </div>
+
+            <div>
+              <h4 style="font-size: 1rem; font-weight: 700; color: var(--primary);">Hyderabad & Regional Hub</h4>
+              <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+                Unit 402, Cyber Towers, Hitec City, Madhapur, Hyderabad 500081
+              </p>
+              <p style="font-size: 0.85rem; color: var(--brand); font-weight: 600; margin-top: 0.35rem;">
+                📞 +91 98490 65432 | ✉️ hyderabad@estatehub.com
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="details-card" style="padding: 1.75rem; background: linear-gradient(135deg, var(--brand), #1d4ed8); color: #fff;">
+          <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.5rem;">Operating Hours</h3>
+          <p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 1rem;">
+            Our customer helpline and site tour advisors are available:
+          </p>
+          <div style="font-size: 0.875rem; font-weight: 600;">
+            <div>Monday – Saturday: 9:00 AM – 7:30 PM IST</div>
+            <div>Sunday: 10:00 AM – 5:00 PM IST</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Interactive FAQ Section -->
+    <section class="section" style="margin-top: 2rem;">
+      <div class="section-header">
+        <span class="section-tag">Got Questions?</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Learn more about how EstateHub verifies properties, connects clients, and ensures transparent transactions.</p>
+      </div>
+
+      <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
+        
+        <details class="details-card" style="padding: 1.25rem 1.75rem; cursor: pointer;" open>
+          <summary style="font-size: 1.1rem; font-weight: 700; color: var(--primary); outline: none;">
+            How does EstateHub verify property listings?
+          </summary>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.75rem; line-height: 1.6;">
+            Our field operations team conducts physical property inspections, checks DTCP/RERA approvals, validates clear legal titles, and ensures photos match the actual physical property.
+          </p>
+        </details>
+
+        <details class="details-card" style="padding: 1.25rem 1.75rem; cursor: pointer;">
+          <summary style="font-size: 1.1rem; font-weight: 700; color: var(--primary); outline: none;">
+            Are there any hidden fees or extra brokerage markups?
+          </summary>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.75rem; line-height: 1.6;">
+            No. All prices displayed on EstateHub are direct owner and verified agent asking rates with complete transparency. We do not charge hidden listing markups.
+          </p>
+        </details>
+
+        <details class="details-card" style="padding: 1.25rem 1.75rem; cursor: pointer;">
+          <summary style="font-size: 1.1rem; font-weight: 700; color: var(--primary); outline: none;">
+            How can I schedule a private site visit?
+          </summary>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.75rem; line-height: 1.6;">
+            Simply click on any property details page and choose "Contact Agent" or click "Call Directly". You can propose your convenient weekend or weekday time slot.
+          </p>
+        </details>
+
+        <details class="details-card" style="padding: 1.25rem 1.75rem; cursor: pointer;">
+          <summary style="font-size: 1.1rem; font-weight: 700; color: var(--primary); outline: none;">
+            Can I list my own property as an owner or agent?
+          </summary>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.75rem; line-height: 1.6;">
+            Yes! Click on "Sell" or "Post Property" in the top navigation bar. Fill out the property specs and photos, and it will be instantly published to your dashboard and the public search directory.
+          </p>
+        </details>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Reusable Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="./index.html" class="logo" style="color: #fff;">
+            <div class="logo-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+            </div>
+            Estate<span style="color: #60a5fa;">Hub</span>
+          </a>
+          <p class="footer-desc">
+            India's most trusted real estate discovery portal for luxury apartments, villas, penthouses, and commercial properties.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./properties.html">All Properties</a></li>
+            <li><a href="./properties.html?type=sale">Properties for Sale</a></li>
+            <li><a href="./properties.html?type=rent">Properties for Rent</a></li>
+            <li><a href="./add-property.html">Post Free Listing</a></li>
+            <li><a href="./favorites.html">Saved Wishlist</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Popular Cities</h4>
+          <ul class="footer-links">
+            <li><a href="./properties.html?city=Mumbai">Mumbai Properties</a></li>
+            <li><a href="./properties.html?city=Bangalore">Bangalore Properties</a></li>
+            <li><a href="./properties.html?city=Hyderabad">Hyderabad Properties</a></li>
+            <li><a href="./properties.html?city=Chennai">Chennai Properties</a></li>
+            <li><a href="./properties.html?city=Pune">Pune Properties</a></li>
+            <li><a href="./properties.html?city=Goa">Goa Holiday Homes</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">User Account</h4>
+          <ul class="footer-links">
+            <li><a href="./dashboard.html">Agent Dashboard</a></li>
+            <li><a href="./login.html">Sign In</a></li>
+            <li><a href="./register.html">Register Account</a></li>
+            <li><a href="./contact.html">Customer Support</a></li>
+            <li><a href="javascript:void(0)" onclick="StorageManager.resetToDefaults()">Reset Sample Data</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 EstateHub Real Estate Portal. Built with HTML, CSS, and Vanilla JavaScript.</p>
+        <p>100% LocalStorage Database Simulation</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./js/data.js"></script>
+  <script src="./js/storage.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/app.js"></script>
+
+  <script>
+    function handleGeneralContact(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("contactName").value.trim();
+      const email = document.getElementById("contactEmail").value.trim();
+      const phone = document.getElementById("contactPhone").value.trim();
+      const city = document.getElementById("contactCity").value;
+      const subject = document.getElementById("contactSubject").value.trim();
+      const msg = document.getElementById("contactMessage").value.trim();
+
+      const inquiry = {
+        propertyId: "",
+        propertyTitle: subject ? `General: ${subject} (${city})` : `General Inquiry (${city})`,
+        propertyPrice: 0,
+        propertyImage: "",
+        senderName: name,
+        senderEmail: email,
+        senderPhone: phone,
+        message: msg
+      };
+
+      StorageManager.addInquiry(inquiry);
+      document.getElementById("generalContactForm").reset();
+      App.showToast("Message sent successfully! Our team will contact you shortly.", "success", 4500);
+    }
+  </script>
+</body>
+</html>

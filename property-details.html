@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Property Details | EstateHub</title>
+  <meta name="description" content="View complete property details, specs, amenities, high-res photos, and contact the verified listing agent." />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="./index.html" class="logo">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        Estate<span>Hub</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="./index.html">Home</a>
+        <a href="./properties.html" class="active">Properties</a>
+        <a href="./properties.html?type=sale">Buy</a>
+        <a href="./properties.html?type=rent">Rent</a>
+        <a href="./add-property.html">Sell</a>
+        <a href="./contact.html">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="./favorites.html" class="fav-nav-link" title="Saved Wishlist">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="nav-fav-badge">0</span>
+        </a>
+
+        <div class="nav-auth-container"></div>
+
+        <button type="button" class="hamburger-btn" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-overlay"></div>
+  <aside class="mobile-drawer">
+    <div class="mobile-nav-links">
+      <a href="./index.html">Home</a>
+      <a href="./properties.html" class="active">Properties</a>
+      <a href="./properties.html?type=sale">Buy Properties</a>
+      <a href="./properties.html?type=rent">Rent Properties</a>
+      <a href="./add-property.html">Sell / Post Property</a>
+      <a href="./favorites.html">Favorites</a>
+      <a href="./dashboard.html">Dashboard</a>
+      <a href="./contact.html">Contact Us</a>
+    </div>
+    <div class="nav-auth-container" style="margin-top: auto;"></div>
+  </aside>
+
+  <!-- Main Container -->
+  <div id="propertyDetailsContainer">
+    <div class="container">
+      
+      <!-- Details Header & Breadcrumb -->
+      <div class="details-header">
+        <div class="details-breadcrumb">
+          <a href="./index.html">Home</a>
+          <span>/</span>
+          <a href="./properties.html">Properties</a>
+          <span>/</span>
+          <span id="breadcrumbCity">City</span>
+          <span>/</span>
+          <span id="breadcrumbTitle" style="color: var(--text-main); font-weight: 600;">Loading...</span>
+        </div>
+
+        <div class="details-title-row">
+          <div class="details-title-main">
+            <div id="propertyBadges" style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;"></div>
+            <h1 id="propertyTitle">Loading Property Details...</h1>
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 1rem; margin-top: 0.35rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand);">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <span id="propertyAddress">...</span>
+            </div>
+          </div>
+
+          <div class="details-price-badge">
+            <div style="font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Asking Price</div>
+            <div id="propertyPrice" class="main-price">₹0</div>
+            
+            <div class="details-actions-bar">
+              <button type="button" id="detailFavBtn" class="btn btn-outline btn-sm" title="Add to Wishlist">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                Save
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="navigator.clipboard.writeText(window.location.href); App.showToast('Listing URL copied to clipboard!', 'success');" title="Copy Link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                  <polyline points="16 6 12 2 8 6"></polyline>
+                  <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg>
+                Share
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Gallery -->
+      <section class="gallery-section">
+        <div class="gallery-main-wrap">
+          <img id="galleryMainImg" src="" alt="Property Photo" class="gallery-main-img" />
+          <button type="button" id="galleryPrev" class="gallery-btn-prev" aria-label="Previous image">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <button type="button" id="galleryNext" class="gallery-btn-next" aria-label="Next image">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+          <div id="galleryCounter" class="gallery-counter">1 / 1</div>
+        </div>
+
+        <div id="galleryThumbs" class="gallery-thumbs-row">
+          <!-- Populated by js/details.js -->
+        </div>
+      </section>
+
+      <!-- Content Grid: Left Main Details & Right Sticky Agent Box -->
+      <div class="details-content-grid">
+        
+        <!-- Left Column -->
+        <div class="details-main-col">
+          
+          <!-- Key Specs Card -->
+          <div class="details-card">
+            <h2 class="details-card-title">Property Overview & Specifications</h2>
+            <div id="specsGrid" class="specs-grid-8">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Description Card -->
+          <div class="details-card">
+            <h2 class="details-card-title">Property Description</h2>
+            <p id="propertyDescription" style="color: var(--text-main); font-size: 1.05rem; line-height: 1.8; white-space: pre-line;"></p>
+          </div>
+
+          <!-- Key Highlights / Features -->
+          <div class="details-card">
+            <h2 class="details-card-title">Key Features & Highlights</h2>
+            <div id="propertyFeaturesList" class="features-check-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Amenities Card -->
+          <div class="details-card">
+            <h2 class="details-card-title">Amenities & Facilities</h2>
+            <div id="propertyAmenitiesList" class="amenities-list-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Interactive EMI Calculator Card -->
+          <div id="emiCalculatorCard" class="details-card calculator-card">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+              <div style="background-color: var(--brand); color: #fff; width: 36px; height: 36px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+              </div>
+              <div>
+                <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">Home Loan EMI Calculator</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Estimate your monthly mortgage payments in real-time</p>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
+              <div>
+                <label class="form-label" style="display: flex; justify-content: space-between;">
+                  <span>Loan Principal:</span>
+                  <strong id="calcLoanAmountVal" style="color: var(--brand);">₹0</strong>
+                </label>
+                <input type="range" id="calcLoanAmount" min="500000" max="50000000" step="100000" style="width: 100%;" />
+              </div>
+
+              <div>
+                <label class="form-label" style="display: flex; justify-content: space-between;">
+                  <span>Interest Rate:</span>
+                  <strong id="calcInterestRateVal" style="color: var(--brand);">8.5%</strong>
+                </label>
+                <input type="range" id="calcInterestRate" min="6.5" max="15.0" step="0.1" value="8.5" style="width: 100%;" />
+              </div>
+
+              <div>
+                <label class="form-label" style="display: flex; justify-content: space-between;">
+                  <span>Tenure (Years):</span>
+                  <strong id="calcTenureVal" style="color: var(--brand);">20 Years</strong>
+                </label>
+                <input type="range" id="calcTenure" min="5" max="30" step="1" value="20" style="width: 100%;" />
+              </div>
+            </div>
+
+            <div class="calc-display-box">
+              <div style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">Estimated Monthly EMI</div>
+              <div id="calcMonthlyEmi" class="calc-emi-amount">₹0</div>
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">
+                Total Interest: <strong id="calcTotalInterest" style="color: var(--primary);">₹0</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Sticky Agent Box -->
+        <aside>
+          <div class="agent-card-sticky">
+            <div class="agent-profile-header">
+              <img id="agentAvatar" src="" alt="Agent Photo" class="agent-avatar-lg" />
+              <div>
+                <h3 id="agentName" class="agent-name">Agent Name</h3>
+                <p id="agentRole" class="agent-role">Property Advisor</p>
+                <div id="agentRating" style="font-size: 0.8rem; font-weight: 700; color: var(--accent-gold); margin-top: 0.25rem;">
+                  ★ 4.9 (35 Reviews)
+                </div>
+              </div>
+            </div>
+
+            <div style="background-color: var(--bg-alt); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--text-main); font-weight: 600;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--success);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>Verified Agent Partner</span>
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+                Direct verification & zero brokerage markup on this verified property.
+              </p>
+            </div>
+
+            <div class="agent-contact-actions">
+              <button type="button" id="openInquiryModalBtn" class="btn btn-primary btn-block btn-lg">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Contact Agent
+              </button>
+
+              <a id="agentCallBtn" href="tel:+919820154321" class="btn btn-outline btn-block btn-lg">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                Call Directly
+              </a>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+
+      <!-- Similar Properties Section -->
+      <section class="section">
+        <div class="section-header" style="text-align: left; margin-bottom: 2rem;">
+          <span class="section-tag">Similar Recommendations</span>
+          <h2 class="section-title" style="font-size: 1.75rem;">Similar Properties You May Like</h2>
+        </div>
+
+        <div id="similarPropertiesGrid" class="properties-grid">
+          <!-- Populated by js/details.js -->
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Contact Agent Inquiry Modal -->
+  <div id="inquiryModal" class="modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Contact Listing Agent</h3>
+        <button type="button" class="modal-close-btn" data-close-modal aria-label="Close modal">&times;</button>
+      </div>
+      
+      <form id="propertyInquiryForm">
+        <div class="modal-body">
+          <div style="background-color: var(--brand-light); padding: 0.85rem 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; font-size: 0.875rem;">
+            Inquiring about: <strong id="inquiryModalPropTitle" style="color: var(--brand);">Property</strong>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Your Full Name <span class="required">*</span></label>
+            <input type="text" name="senderName" class="form-control" placeholder="e.g. Aditi Sharma" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email Address <span class="required">*</span></label>
+            <input type="email" name="senderEmail" class="form-control" placeholder="aditi@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Phone Number <span class="required">*</span></label>
+            <input type="tel" name="senderPhone" class="form-control" placeholder="+91 98765 43210" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Message / Scheduling Request</label>
+            <textarea name="message" class="form-textarea" placeholder="Hello, I am interested in this property. Please let me know when we can arrange a site visit."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Send Inquiry Message</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reusable Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="./index.html" class="logo" style="color: #fff;">
+            <div class="logo-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+            </div>
+            Estate<span style="color: #60a5fa;">Hub</span>
+          </a>
+          <p class="footer-desc">
+            India's most trusted real estate discovery portal for luxury apartments, villas, penthouses, and commercial properties.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./properties.html">All Properties</a></li>
+            <li><a href="./properties.html?type=sale">Properties for Sale</a></li>
+            <li><a href="./properties.html?type=rent">Properties for Rent</a></li>
+            <li><a href="./add-property.html">Post Free Listing</a></li>
+            <li><a href="./favorites.html">Saved Wishlist</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Popular Cities</h4>
+          <ul class="footer-links">
+            <li><a href="./properties.html?city=Mumbai">Mumbai Properties</a></li>
+            <li><a href="./properties.html?city=Bangalore">Bangalore Properties</a></li>
+            <li><a href="./properties.html?city=Hyderabad">Hyderabad Properties</a></li>
+            <li><a href="./properties.html?city=Chennai">Chennai Properties</a></li>
+            <li><a href="./properties.html?city=Pune">Pune Properties</a></li>
+            <li><a href="./properties.html?city=Goa">Goa Holiday Homes</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">User Account</h4>
+          <ul class="footer-links">
+            <li><a href="./dashboard.html">Agent Dashboard</a></li>
+            <li><a href="./login.html">Sign In</a></li>
+            <li><a href="./register.html">Register Account</a></li>
+            <li><a href="./contact.html">Customer Support</a></li>
+            <li><a href="javascript:void(0)" onclick="StorageManager.resetToDefaults()">Reset Sample Data</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 EstateHub Real Estate Portal. Built with HTML, CSS, and Vanilla JavaScript.</p>
+        <p>100% LocalStorage Database Simulation</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./js/data.js"></script>
+  <script src="./js/storage.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/app.js"></script>
+  <script src="./js/details.js"></script>
+</body>
+</html>

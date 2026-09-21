@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post / Edit Property | EstateHub</title>
+  <meta name="description" content="List your property for sale or rent on EstateHub. Reach thousands of verified buyers and tenants." />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="./index.html" class="logo">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        Estate<span>Hub</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="./index.html">Home</a>
+        <a href="./properties.html">Properties</a>
+        <a href="./properties.html?type=sale">Buy</a>
+        <a href="./properties.html?type=rent">Rent</a>
+        <a href="./add-property.html" class="active">Sell</a>
+        <a href="./contact.html">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="./favorites.html" class="fav-nav-link" title="Saved Wishlist">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="nav-fav-badge">0</span>
+        </a>
+
+        <div class="nav-auth-container"></div>
+
+        <button type="button" class="hamburger-btn" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-overlay"></div>
+  <aside class="mobile-drawer">
+    <div class="mobile-nav-links">
+      <a href="./index.html">Home</a>
+      <a href="./properties.html">Properties</a>
+      <a href="./properties.html?type=sale">Buy Properties</a>
+      <a href="./properties.html?type=rent">Rent Properties</a>
+      <a href="./add-property.html" class="active">Sell / Post Property</a>
+      <a href="./favorites.html">Favorites</a>
+      <a href="./dashboard.html">Dashboard</a>
+      <a href="./contact.html">Contact Us</a>
+    </div>
+    <div class="nav-auth-container" style="margin-top: auto;"></div>
+  </aside>
+
+  <!-- Page Header -->
+  <div style="background: linear-gradient(180deg, #fff 0%, var(--bg-alt) 100%); border-bottom: 1px solid var(--border); padding: 2.5rem 0;">
+    <div class="container">
+      <span id="pageTag" class="section-tag" style="margin-bottom: 0.5rem;">Seller & Agent Portal</span>
+      <h1 id="formPageTitle" style="font-size: 2.25rem; font-weight: 800; color: var(--primary);">
+        Add New Property Listing
+      </h1>
+      <p id="formPageSubtitle" style="color: var(--text-muted); font-size: 1rem; margin-top: 0.25rem;">
+        Fill in the specifications, amenities, and photos below to list your verified property on EstateHub.
+      </p>
+    </div>
+  </div>
+
+  <!-- Form Main Section -->
+  <main class="container section">
+    <div style="max-width: 860px; margin: 0 auto;">
+      
+      <form id="propertySubmissionForm" class="details-card" style="padding: 2.5rem;" onsubmit="handlePropertySubmit(event)">
+        
+        <!-- SECTION 1: Basic Information -->
+        <div style="margin-bottom: 2.5rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--brand-light); display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: var(--brand); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem;">1</span>
+            Basic Property Information
+          </h2>
+
+          <div class="form-group">
+            <label class="form-label">Property Title <span class="required">*</span></label>
+            <input type="text" id="propTitle" class="form-control" placeholder="e.g. Luxurious 3 BHK Gated Villa with Private Pool" required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Listing Type <span class="required">*</span></label>
+              <select id="propListingType" class="form-select" required>
+                <option value="sale">For Sale</option>
+                <option value="rent">For Rent</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Property Type / Category <span class="required">*</span></label>
+              <select id="propPropertyType" class="form-select" required>
+                <option value="Apartment">Apartment / Flat</option>
+                <option value="Villa">Independent Villa</option>
+                <option value="Penthouse">Sky Penthouse</option>
+                <option value="Studio">Studio Apartment</option>
+                <option value="Commercial">Commercial Space / Office</option>
+                <option value="Plot">Residential Plot / Land</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Price (in Indian Rupees ₹) <span class="required">*</span></label>
+              <input type="number" id="propPrice" class="form-control" placeholder="e.g. 8500000 or 45000" required />
+              <span id="priceHelper" style="font-size: 0.75rem; color: var(--brand); font-weight: 600; margin-top: 0.25rem; display: block;"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Detailed Description <span class="required">*</span></label>
+            <textarea id="propDescription" class="form-textarea" rows="4" placeholder="Highlight key selling points, neighborhood vibe, nearby transit, sunlight orientation, and materials..." required></textarea>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Location -->
+        <div style="margin-bottom: 2.5rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--brand-light); display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: var(--brand); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem;">2</span>
+            Location Details
+          </h2>
+
+          <div class="form-group">
+            <label class="form-label">Street Address & Landmark <span class="required">*</span></label>
+            <input type="text" id="propAddress" class="form-control" placeholder="e.g. Tower 4, Skyline Residencies, OMR IT Expressway" required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">City <span class="required">*</span></label>
+              <select id="propCity" class="form-select" required>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Hyderabad">Hyderabad</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Pune">Pune</option>
+                <option value="Delhi">Delhi NCR</option>
+                <option value="Goa">Goa</option>
+                <option value="Kolkata">Kolkata</option>
+                <option value="Coimbatore">Coimbatore</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">State <span class="required">*</span></label>
+              <input type="text" id="propState" class="form-control" placeholder="e.g. Maharashtra, Karnataka" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Pincode <span class="required">*</span></label>
+              <input type="text" id="propPincode" class="form-control" placeholder="e.g. 560066" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Specifications -->
+        <div style="margin-bottom: 2.5rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--brand-light); display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: var(--brand); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem;">3</span>
+            Property Specifications
+          </h2>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Bedrooms (BHK)</label>
+              <input type="number" id="propBedrooms" class="form-control" placeholder="e.g. 3 (0 for Plot)" min="0" max="15" value="3" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Bathrooms</label>
+              <input type="number" id="propBathrooms" class="form-control" placeholder="e.g. 3" min="0" max="15" value="3" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Super Area (sq.ft) <span class="required">*</span></label>
+              <input type="number" id="propArea" class="form-control" placeholder="e.g. 1850" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Year Built</label>
+              <input type="number" id="propYearBuilt" class="form-control" placeholder="e.g. 2024" value="2024" />
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Parking Facilities</label>
+              <input type="text" id="propParking" class="form-control" placeholder="e.g. 2 Covered Slots" value="2 Covered Slots" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Furnishing Status</label>
+              <select id="propFurnished" class="form-select">
+                <option value="Fully Furnished">Fully Furnished</option>
+                <option value="Semi-Furnished" selected>Semi-Furnished</option>
+                <option value="Unfurnished">Unfurnished</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Amenities -->
+        <div style="margin-bottom: 2.5rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--brand-light); display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: var(--brand); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem;">4</span>
+            Amenities & Highlights
+          </h2>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" name="amenityCb" value="Swimming Pool" checked /> Swimming Pool
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" name="amenityCb" value="Gym" checked /> Gym & Fitness
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" name="amenityCb" value="Security" checked /> 24/7 Security
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" name="amenityCb" value="Balcony" checked /> Balcony
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" name="amenityCb" value="Air Conditioning" /> Air Conditioning
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" name="amenityCb" value="Garden" /> Private Garden
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" name="amenityCb" value="WiFi" checked /> High Speed WiFi
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" name="amenityCb" value="Parking" checked /> Covered Parking
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" name="amenityCb" value="Power Backup" checked /> 100% Power Backup
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" name="amenityCb" value="Clubhouse" /> Clubhouse Access
+            </label>
+          </div>
+        </div>
+
+        <!-- SECTION 5: Images -->
+        <div style="margin-bottom: 2.5rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--brand-light); display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: var(--brand); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem;">5</span>
+            Property Images (URLs)
+          </h2>
+
+          <div class="form-group">
+            <label class="form-label">Primary Image URL <span class="required">*</span></label>
+            <input type="url" id="propImg1" class="form-control" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Additional Photo 2 (URL)</label>
+            <input type="url" id="propImg2" class="form-control" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Additional Photo 3 (URL)</label>
+            <input type="url" id="propImg3" class="form-control" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80" />
+          </div>
+        </div>
+
+        <!-- SECTION 6: Owner / Agent Information -->
+        <div style="margin-bottom: 2.5rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--brand-light); display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: var(--brand); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem;">6</span>
+            Owner / Listing Agent Details
+          </h2>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Contact Person Name <span class="required">*</span></label>
+              <input type="text" id="propAgentName" class="form-control" placeholder="e.g. Rohit Malhotra" value="Aarav Sharma" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Contact Phone <span class="required">*</span></label>
+              <input type="tel" id="propAgentPhone" class="form-control" placeholder="+91 98765 43210" value="+91 98201 54321" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Contact Email <span class="required">*</span></label>
+              <input type="email" id="propAgentEmail" class="form-control" placeholder="agent@estatehub.com" value="aarav.agent@estatehub.com" required />
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 0.75rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9375rem; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" id="propFeatured" /> Mark as Featured Property (Highlights card in searches)
+            </label>
+          </div>
+        </div>
+
+        <!-- Submit & Actions -->
+        <div style="display: flex; gap: 1rem; justify-content: flex-end; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+          <a href="./dashboard.html" class="btn btn-ghost">Cancel</a>
+          <button type="submit" id="submitBtn" class="btn btn-primary btn-lg">
+            Save & Publish Listing
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </main>
+
+  <!-- Reusable Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="./index.html" class="logo" style="color: #fff;">
+            <div class="logo-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+            </div>
+            Estate<span style="color: #60a5fa;">Hub</span>
+          </a>
+          <p class="footer-desc">
+            India's most trusted real estate discovery portal for luxury apartments, villas, penthouses, and commercial properties.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./properties.html">All Properties</a></li>
+            <li><a href="./properties.html?type=sale">Properties for Sale</a></li>
+            <li><a href="./properties.html?type=rent">Properties for Rent</a></li>
+            <li><a href="./add-property.html">Post Free Listing</a></li>
+            <li><a href="./favorites.html">Saved Wishlist</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Popular Cities</h4>
+          <ul class="footer-links">
+            <li><a href="./properties.html?city=Mumbai">Mumbai Properties</a></li>
+            <li><a href="./properties.html?city=Bangalore">Bangalore Properties</a></li>
+            <li><a href="./properties.html?city=Hyderabad">Hyderabad Properties</a></li>
+            <li><a href="./properties.html?city=Chennai">Chennai Properties</a></li>
+            <li><a href="./properties.html?city=Pune">Pune Properties</a></li>
+            <li><a href="./properties.html?city=Goa">Goa Holiday Homes</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">User Account</h4>
+          <ul class="footer-links">
+            <li><a href="./dashboard.html">Agent Dashboard</a></li>
+            <li><a href="./login.html">Sign In</a></li>
+            <li><a href="./register.html">Register Account</a></li>
+            <li><a href="./contact.html">Customer Support</a></li>
+            <li><a href="javascript:void(0)" onclick="StorageManager.resetToDefaults()">Reset Sample Data</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 EstateHub Real Estate Portal. Built with HTML, CSS, and Vanilla JavaScript.</p>
+        <p>100% LocalStorage Database Simulation</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./js/data.js"></script>
+  <script src="./js/storage.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/app.js"></script>
+
+  <!-- Add / Edit Controller -->
+  <script>
+    let editPropertyId = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Check if user is logged in
+      const user = Auth.getUser();
+      if (user) {
+        document.getElementById("propAgentName").value = user.fullName;
+        document.getElementById("propAgentEmail").value = user.email;
+        if (user.phone) document.getElementById("propAgentPhone").value = user.phone;
+      }
+
+      // Check for edit query parameter
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("edit")) {
+        editPropertyId = params.get("edit");
+        loadPropertyForEdit(editPropertyId);
+      }
+
+      // Price input live preview
+      const priceInput = document.getElementById("propPrice");
+      const priceHelper = document.getElementById("priceHelper");
+      const listingTypeSelect = document.getElementById("propListingType");
+
+      const updatePriceHelper = () => {
+        const val = Number(priceInput.value);
+        if (val) {
+          priceHelper.textContent = "Formatted Display: " + App.formatPrice(val, listingTypeSelect.value).replace(/<[^>]*>?/gm, '');
+        } else {
+          priceHelper.textContent = "";
+        }
+      };
+
+      priceInput.addEventListener("input", updatePriceHelper);
+      listingTypeSelect.addEventListener("change", updatePriceHelper);
+    });
+
+    function loadPropertyForEdit(id) {
+      const prop = StorageManager.getPropertyById(id);
+      if (!prop) return;
+
+      document.getElementById("formPageTitle").textContent = "Edit Property Listing";
+      document.getElementById("formPageSubtitle").textContent = `Updating listing details for "${prop.title}"`;
+      document.getElementById("pageTag").textContent = "Edit Mode";
+      document.getElementById("submitBtn").textContent = "Update Listing";
+
+      document.getElementById("propTitle").value = prop.title || "";
+      document.getElementById("propListingType").value = prop.listingType || "sale";
+      document.getElementById("propPropertyType").value = prop.propertyType || "Apartment";
+      document.getElementById("propPrice").value = prop.price || "";
+      document.getElementById("propDescription").value = prop.description || "";
+      document.getElementById("propAddress").value = prop.address || "";
+      document.getElementById("propCity").value = prop.city || "Mumbai";
+      document.getElementById("propState").value = prop.state || "";
+      document.getElementById("propPincode").value = prop.pincode || "";
+      document.getElementById("propBedrooms").value = prop.bedrooms || 0;
+      document.getElementById("propBathrooms").value = prop.bathrooms || 0;
+      document.getElementById("propArea").value = prop.area || "";
+      document.getElementById("propYearBuilt").value = prop.yearBuilt || 2024;
+      document.getElementById("propParking").value = prop.parking || "";
+      document.getElementById("propFurnished").value = prop.furnishedStatus || "Semi-Furnished";
+      document.getElementById("propFeatured").checked = !!prop.featured;
+
+      if (prop.images) {
+        if (prop.images[0]) document.getElementById("propImg1").value = prop.images[0];
+        if (prop.images[1]) document.getElementById("propImg2").value = prop.images[1];
+        if (prop.images[2]) document.getElementById("propImg3").value = prop.images[2];
+      }
+
+      if (prop.agent) {
+        document.getElementById("propAgentName").value = prop.agent.name || "";
+        document.getElementById("propAgentPhone").value = prop.agent.phone || "";
+        document.getElementById("propAgentEmail").value = prop.agent.email || "";
+      }
+
+      // Check amenities
+      if (prop.amenities) {
+        document.querySelectorAll("input[name='amenityCb']").forEach(cb => {
+          cb.checked = prop.amenities.includes(cb.value);
+        });
+      }
+    }
+
+    function handlePropertySubmit(e) {
+      e.preventDefault();
+
+      // Gather Images
+      const images = [];
+      const img1 = document.getElementById("propImg1").value.trim();
+      const img2 = document.getElementById("propImg2").value.trim();
+      const img3 = document.getElementById("propImg3").value.trim();
+      if (img1) images.push(img1);
+      if (img2) images.push(img2);
+      if (img3) images.push(img3);
+
+      // Gather Amenities
+      const amenities = Array.from(document.querySelectorAll("input[name='amenityCb']:checked")).map(cb => cb.value);
+
+      const propertyData = {
+        title: document.getElementById("propTitle").value.trim(),
+        listingType: document.getElementById("propListingType").value,
+        propertyType: document.getElementById("propPropertyType").value,
+        price: Number(document.getElementById("propPrice").value),
+        description: document.getElementById("propDescription").value.trim(),
+        address: document.getElementById("propAddress").value.trim(),
+        city: document.getElementById("propCity").value,
+        state: document.getElementById("propState").value.trim(),
+        pincode: document.getElementById("propPincode").value.trim(),
+        bedrooms: Number(document.getElementById("propBedrooms").value) || 0,
+        bathrooms: Number(document.getElementById("propBathrooms").value) || 0,
+        area: Number(document.getElementById("propArea").value),
+        yearBuilt: Number(document.getElementById("propYearBuilt").value) || 2024,
+        parking: document.getElementById("propParking").value.trim(),
+        furnishedStatus: document.getElementById("propFurnished").value,
+        featured: document.getElementById("propFeatured").checked,
+        images: images.length > 0 ? images : [App.getFallbackImage()],
+        amenities: amenities,
+        features: [
+          `${document.getElementById("propBedrooms").value} BHK Configured Layout`,
+          `Super Built-up Area: ${document.getElementById("propArea").value} sq.ft`,
+          `${document.getElementById("propCity").value} Prime Location`,
+          "Legal Title Verified"
+        ],
+        agent: {
+          name: document.getElementById("propAgentName").value.trim(),
+          phone: document.getElementById("propAgentPhone").value.trim(),
+          email: document.getElementById("propAgentEmail").value.trim(),
+          role: "Verified Property Consultant",
+          avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=256&q=80",
+          rating: 4.9,
+          reviewsCount: 15
+        }
+      };
+
+      if (editPropertyId) {
+        StorageManager.updateProperty(editPropertyId, propertyData);
+        App.showToast("Property listing updated successfully!", "success");
+        setTimeout(() => {
+          window.location.href = `./property-details.html?id=${editPropertyId}`;
+        }, 800);
+      } else {
+        const created = StorageManager.addProperty(propertyData);
+        App.showToast("New property published successfully!", "success");
+        setTimeout(() => {
+          window.location.href = "./dashboard.html";
+        }, 800);
+      }
+    }
+  </script>
+</body>
+</html>

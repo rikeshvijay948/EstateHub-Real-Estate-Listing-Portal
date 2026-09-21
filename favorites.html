@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saved Properties & Wishlist | EstateHub</title>
+  <meta name="description" content="View and manage your saved favorite real estate listings." />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="./index.html" class="logo">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        Estate<span>Hub</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="./index.html">Home</a>
+        <a href="./properties.html">Properties</a>
+        <a href="./properties.html?type=sale">Buy</a>
+        <a href="./properties.html?type=rent">Rent</a>
+        <a href="./add-property.html">Sell</a>
+        <a href="./contact.html">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="./favorites.html" class="fav-nav-link active" title="Saved Wishlist">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="nav-fav-badge">0</span>
+        </a>
+
+        <div class="nav-auth-container"></div>
+
+        <button type="button" class="hamburger-btn" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-overlay"></div>
+  <aside class="mobile-drawer">
+    <div class="mobile-nav-links">
+      <a href="./index.html">Home</a>
+      <a href="./properties.html">Properties</a>
+      <a href="./properties.html?type=sale">Buy Properties</a>
+      <a href="./properties.html?type=rent">Rent Properties</a>
+      <a href="./add-property.html">Sell / Post Property</a>
+      <a href="./favorites.html" class="active">Favorites</a>
+      <a href="./dashboard.html">Dashboard</a>
+      <a href="./contact.html">Contact Us</a>
+    </div>
+    <div class="nav-auth-container" style="margin-top: auto;"></div>
+  </aside>
+
+  <!-- Page Banner -->
+  <div style="background-color: #fff; border-bottom: 1px solid var(--border); padding: 2.5rem 0;">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <span class="section-tag" style="margin-bottom: 0.5rem;">Your Wishlist</span>
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--primary);">
+          Saved Properties
+        </h1>
+        <p id="favoritesSubtitle" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">
+          Keep track of your favorite apartments, villas, and commercial spaces.
+        </p>
+      </div>
+
+      <div id="clearFavoritesWrap" style="display: none;">
+        <button type="button" class="btn btn-danger-outline btn-sm" onclick="clearAllFavorites()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          Clear All Favorites
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container section">
+    <div id="favoritesGrid" class="properties-grid">
+      <!-- Dynamically Populated -->
+    </div>
+  </main>
+
+  <!-- Reusable Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="./index.html" class="logo" style="color: #fff;">
+            <div class="logo-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+            </div>
+            Estate<span style="color: #60a5fa;">Hub</span>
+          </a>
+          <p class="footer-desc">
+            India's most trusted real estate discovery portal for luxury apartments, villas, penthouses, and commercial properties.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./properties.html">All Properties</a></li>
+            <li><a href="./properties.html?type=sale">Properties for Sale</a></li>
+            <li><a href="./properties.html?type=rent">Properties for Rent</a></li>
+            <li><a href="./add-property.html">Post Free Listing</a></li>
+            <li><a href="./favorites.html">Saved Wishlist</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Popular Cities</h4>
+          <ul class="footer-links">
+            <li><a href="./properties.html?city=Mumbai">Mumbai Properties</a></li>
+            <li><a href="./properties.html?city=Bangalore">Bangalore Properties</a></li>
+            <li><a href="./properties.html?city=Hyderabad">Hyderabad Properties</a></li>
+            <li><a href="./properties.html?city=Chennai">Chennai Properties</a></li>
+            <li><a href="./properties.html?city=Pune">Pune Properties</a></li>
+            <li><a href="./properties.html?city=Goa">Goa Holiday Homes</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">User Account</h4>
+          <ul class="footer-links">
+            <li><a href="./dashboard.html">Agent Dashboard</a></li>
+            <li><a href="./login.html">Sign In</a></li>
+            <li><a href="./register.html">Register Account</a></li>
+            <li><a href="./contact.html">Customer Support</a></li>
+            <li><a href="javascript:void(0)" onclick="StorageManager.resetToDefaults()">Reset Sample Data</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 EstateHub Real Estate Portal. Built with HTML, CSS, and Vanilla JavaScript.</p>
+        <p>100% LocalStorage Database Simulation</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./js/data.js"></script>
+  <script src="./js/storage.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/app.js"></script>
+
+  <!-- Favorites Page Controller -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      renderFavoritesGrid();
+    });
+
+    function renderFavoritesGrid() {
+      const grid = document.getElementById("favoritesGrid");
+      const clearWrap = document.getElementById("clearFavoritesWrap");
+      const subtitle = document.getElementById("favoritesSubtitle");
+      if (!grid) return;
+
+      const favProperties = StorageManager.getFavoriteProperties();
+
+      if (favProperties.length === 0) {
+        clearWrap.style.display = "none";
+        subtitle.textContent = "You have not saved any properties to your wishlist yet.";
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <h2 class="empty-title">Your Wishlist is Empty</h2>
+            <p class="empty-desc">Explore verified listings and click the heart icon on any property card to save it here for easy comparison.</p>
+            <a href="./properties.html" class="btn btn-primary btn-lg">Browse Verified Properties</a>
+          </div>
+        `;
+        return;
+      }
+
+      clearWrap.style.display = "block";
+      subtitle.textContent = `You have ${favProperties.length} saved propert${favProperties.length === 1 ? 'y' : 'ies'} in your wishlist.`;
+
+      grid.innerHTML = favProperties.map(p => App.createPropertyCard(p, { showRemoveFavorite: true })).join("");
+    }
+
+    function clearAllFavorites() {
+      if (confirm("Are you sure you want to clear all saved favorite properties?")) {
+        localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify([]));
+        window.dispatchEvent(new CustomEvent("favoritesUpdated", { detail: { id: null, isFavorite: false } }));
+        App.showToast("All favorites cleared.", "info");
+        renderFavoritesGrid();
+      }
+    }
+  </script>
+</body>
+</html>
