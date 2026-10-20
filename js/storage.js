@@ -9,7 +9,8 @@ const STORAGE_KEYS = {
   CURRENT_USER: "estatehub_current_user",
   FAVORITES: "estatehub_favorites",
   INQUIRIES: "estatehub_inquiries",
-  COMPARE: "estatehub_compare"
+  COMPARE: "estatehub_compare",
+  REVIEWS: "estatehub_reviews"
 };
 
 const StorageManager = {
@@ -29,6 +30,9 @@ const StorageManager = {
       }
       if (!localStorage.getItem(STORAGE_KEYS.INQUIRIES)) {
         localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(INITIAL_INQUIRIES));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.REVIEWS) && typeof INITIAL_REVIEWS !== "undefined") {
+        localStorage.setItem(STORAGE_KEYS.REVIEWS, JSON.stringify(INITIAL_REVIEWS));
       }
     } catch (e) {
       console.error("Error initializing EstateHub Storage:", e);
@@ -421,6 +425,53 @@ const StorageManager = {
   },
 
   /* ==========================================================
+     PROPERTY REVIEWS & RATINGS
+     ========================================================== */
+
+  /**
+   * Retrieves reviews optionally filtered by property ID.
+   * @param {string} [propertyId]
+   * @returns {Array}
+   */
+  getReviews(propertyId) {
+    this.init();
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.REVIEWS);
+      const reviews = data ? JSON.parse(data) : [];
+      if (propertyId) {
+        return reviews.filter(r => String(r.propertyId) === String(propertyId));
+      }
+      return reviews;
+    } catch (e) {
+      return [];
+    }
+  },
+
+  /**
+   * Adds a new customer review to localStorage.
+   * @param {string} propertyId
+   * @param {Object} reviewData
+   * @returns {Object}
+   */
+  addReview(propertyId, reviewData) {
+    const reviews = this.getReviews();
+    const newReview = {
+      id: "rev-" + Date.now(),
+      propertyId: String(propertyId),
+      author: reviewData.author.trim(),
+      email: (reviewData.email || "").trim(),
+      rating: Number(reviewData.rating) || 5,
+      title: reviewData.title ? reviewData.title.trim() : "Verified Property Review",
+      comment: reviewData.comment.trim(),
+      createdAt: new Date().toISOString()
+    };
+    reviews.unshift(newReview);
+    localStorage.setItem(STORAGE_KEYS.REVIEWS, JSON.stringify(reviews));
+    window.dispatchEvent(new CustomEvent("reviewsUpdated", { detail: { propertyId: String(propertyId), review: newReview } }));
+    return newReview;
+  },
+
+  /* ==========================================================
      DATA RESET & REFRESH
      ========================================================== */
 
@@ -432,6 +483,9 @@ const StorageManager = {
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(INITIAL_USERS));
     localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(INITIAL_FAVORITES));
     localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(INITIAL_INQUIRIES));
+    if (typeof INITIAL_REVIEWS !== "undefined") {
+      localStorage.setItem(STORAGE_KEYS.REVIEWS, JSON.stringify(INITIAL_REVIEWS));
+    }
     window.location.reload();
   }
 };

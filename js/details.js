@@ -31,6 +31,7 @@ const PropertyDetailsController = {
     this.initGallery();
     this.initEmiCalculator();
     this.initInquiryForm();
+    this.initReviews();
     this.renderSimilarProperties();
   },
 
@@ -370,6 +371,183 @@ const PropertyDetailsController = {
         App.showToast("Inquiry sent successfully! The agent will contact you soon.", "success", 4500);
       });
     }
+  },
+
+  /**
+   * Initializes and renders customer reviews for this property.
+   */
+  initReviews() {
+    this.renderReviews();
+
+    // Prefill user details if logged in
+    const user = StorageManager.getCurrentUser();
+    if (user) {
+      const nameInput = document.getElementById("reviewAuthor");
+      const emailInput = document.getElementById("reviewEmail");
+      if (nameInput) nameInput.value = user.fullName || "";
+      if (emailInput) emailInput.value = user.email || "";
+    }
+
+    // Listen to review updates
+    window.addEventListener("reviewsUpdated", (e) => {
+      if (e.detail && e.detail.propertyId === String(this.property.id)) {
+        this.renderReviews();
+      }
+    });
+  },
+
+  /**
+   * Renders reviews list and calculated average star rating.
+   */
+  renderReviews() {
+    const listContainer = document.getElementById("reviewsList");
+    const summaryContainer = document.getElementById("reviewsSummary");
+    if (!listContainer) return;
+
+    const reviews = StorageManager.getReviews(this.property.id);
+
+    if (reviews.length === 0) {
+      if (summaryContainer) {
+        summaryContainer.innerHTML = `No reviews yet. Be the first to share your thoughts!`;
+      }
+      listContainer.innerHTML = `
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--text-muted); background: var(--bg-surface); border-radius: var(--radius-md); border: 1px dashed var(--border);">
+          <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🌟</div>
+          <p style="margin: 0; font-size: 0.95rem;">No reviews submitted yet for this property.</p>
+          <small>Visited or toured this home? Click "Write a Review" above to help future buyers!</small>
+        </div>
+      `;
+      return;
+    }
+
+    // Calculate average rating
+    const avgRating = (reviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0) / reviews.length).toFixed(1);
+    const starString = "★".repeat(Math.round(avgRating)) + "☆".repeat(5 - Math.round(avgRating));
+
+    if (summaryContainer) {
+      summaryContainer.innerHTML = `
+        <span style="color: var(--accent-gold); font-size: 1.05rem; font-weight: 700;">${starString}</span>
+        <strong style="color: var(--text-main); margin-left: 0.35rem;">${avgRating} / 5.0</strong>
+        <span>(${reviews.length} ${reviews.length === 1 ? 'verified review' : 'verified reviews'})</span>
+      `;
+    }
+
+    listContainer.innerHTML = reviews.map(r => {
+      const ratingStars = "★".repeat(r.rating || 5) + "☆".repeat(5 - (r.rating || 5));
+      const formattedDate = new Date(r.createdAt || Date.now()).toLocaleDateString("en-IN", {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+
+      return `
+        <div class="review-item" style="padding: 1.15rem 0; border-bottom: 1px solid var(--border);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--brand-light, #eff6ff); color: var(--brand); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">
+                  ${r.author.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <strong style="font-size: 0.95rem; color: var(--text-main);">${r.author}</strong>
+                  <span style="font-size: 0.75rem; background: var(--bg-alt); padding: 0.15rem 0.4rem; border-radius: 4px; margin-left: 0.35rem; color: var(--success); font-weight: 600;">✓ Verified</span>
+                </div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="color: var(--accent-gold); font-size: 0.95rem;">${ratingStars}</div>
+              <small style="color: var(--text-muted); font-size: 0.78rem;">${formattedDate}</small>
+            </div>
+          </div>
+          <h5 style="margin: 0.5rem 0 0.25rem; font-size: 0.95rem; font-weight: 700; color: var(--text-main);">${r.title || ""}</h5>
+          <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">${r.comment}</p>
+        </div>
+      `;
+    }).join("");
+  },
+
+  /**
+   * Toggles review submission form visibility.
+   */
+  toggleReviewForm() {
+    const form = document.getElementById("propertyReviewForm");
+    const btn = document.getElementById("toggleReviewFormBtn");
+    if (!form) return;
+
+    if (form.style.display === "none" || !form.style.display) {
+      form.style.display = "block";
+      if (btn) btn.innerHTML = `&times; Cancel`;
+    } else {
+      form.style.display = "none";
+      if (btn) btn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+        Write a Review
+      `;
+    }
+  },
+
+  /**
+   * Updates interactive star rating selector.
+   */
+  setRating(rating) {
+    const selectedRatingInput = document.getElementById("selectedRating");
+    const starRatingText = document.getElementById("starRatingText");
+    if (selectedRatingInput) selectedRatingInput.value = rating;
+
+    const labels = {
+      1: "1.0 - Poor",
+      2: "2.0 - Fair",
+      3: "3.0 - Good",
+      4: "4.0 - Very Good",
+      5: "5.0 - Excellent"
+    };
+    if (starRatingText) starRatingText.textContent = labels[rating] || `${rating}.0`;
+
+    const buttons = document.querySelectorAll(".star-pick-btn");
+    buttons.forEach(btn => {
+      const btnRating = Number(btn.getAttribute("data-rating"));
+      if (btnRating <= rating) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+  },
+
+  /**
+   * Handles review submission.
+   */
+  handleReviewSubmit(e) {
+    e.preventDefault();
+    const author = document.getElementById("reviewAuthor").value;
+    const email = document.getElementById("reviewEmail").value;
+    const title = document.getElementById("reviewTitle").value;
+    const comment = document.getElementById("reviewComment").value;
+    const rating = document.getElementById("selectedRating").value || 5;
+
+    if (!author || !email || !comment) {
+      App.showToast("Please fill in all required fields.", "warning");
+      return;
+    }
+
+    StorageManager.addReview(this.property.id, {
+      author,
+      email,
+      title,
+      comment,
+      rating: Number(rating)
+    });
+
+    App.showToast("Thank you! Your verified review has been published.", "success", 4500);
+
+    // Reset form and close
+    const form = document.getElementById("propertyReviewForm");
+    if (form) form.reset();
+    this.setRating(5);
+    this.toggleReviewForm();
   },
 
   /**

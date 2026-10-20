@@ -865,3 +865,44 @@ const INITIAL_INQUIRIES = [
 
 // Initial favorite IDs for demo experience
 const INITIAL_FAVORITES = ["prop-1", "prop-2", "prop-4"];
+
+// Initial sample customer reviews & ratings
+const INITIAL_REVIEWS = [
+  {
+    id: "rev-1",
+    propertyId: "prop-1",
+    author: "Aditya Singhania",
+    rating: 5,
+    title: "Astonishing Sea Views & Unmatched Finishes",
+    comment: "Toured the penthouse yesterday with Rohit. The private sky deck and high ceilings are even more impressive in person than in the pictures. Exceptional construction quality.",
+    createdAt: "2026-09-15T11:30:00Z"
+  },
+  {
+    id: "rev-2",
+    propertyId: "prop-1",
+    author: "Kavita Narang",
+    rating: 5,
+    title: "The Ultimate Worli Luxury Experience",
+    comment: "Spacious rooms, superb marble work, and world-class security. Seamless interaction with the agent as well. Highly recommended for premium buyers.",
+    createdAt: "2026-09-17T16:45:00Z"
+  },
+  {
+    id: "rev-3",
+    propertyId: "prop-2",
+    author: "Vikram Rathore",
+    rating: 5,
+    title: "Peaceful gated villa community",
+    comment: "Great garden area and clean environmental surroundings. The private swimming pool and clubhouse amenities are top-tier.",
+    createdAt: "2026-09-18T14:10:00Z"
+  },
+  {
+    id: "rev-4",
+    propertyId: "prop-4",
+    author: "Deepak Varma",
+    rating: 4,
+    title: "Convenient location for tech professionals",
+    comment: "Close to IT parks in Hitec City. Well maintained society with good gym and security staff.",
+    createdAt: "2026-09-19T08:20:00Z"
+  }
+];
+

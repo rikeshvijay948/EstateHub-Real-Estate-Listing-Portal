@@ -241,6 +241,74 @@
             </div>
           </div>
 
+          <!-- Customer Reviews & Ratings Section -->
+          <div class="details-card reviews-section" id="reviewsSection">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <h3 class="details-card-title" style="margin-bottom: 0.25rem;">Verified Reviews &amp; Ratings</h3>
+                <div id="reviewsSummary" style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm" id="toggleReviewFormBtn" onclick="PropertyDetailsController.toggleReviewForm()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                Write a Review
+              </button>
+            </div>
+
+            <!-- Review Submission Form (collapsed by default) -->
+            <form id="propertyReviewForm" class="review-submission-form" style="display: none; background: var(--bg-alt); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; border: 1px solid var(--border);" onsubmit="PropertyDetailsController.handleReviewSubmit(event)">
+              <h4 style="margin-bottom: 0.75rem; font-size: 1rem; font-weight: 700;">Share Your Experience</h4>
+              
+              <div class="form-group" style="margin-bottom: 1rem;">
+                <label class="form-label" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem;">Your Rating</label>
+                <div class="star-rating-picker" id="starRatingPicker" style="display: flex; align-items: center; gap: 0.35rem;">
+                  <button type="button" class="star-pick-btn active" data-rating="1" onclick="PropertyDetailsController.setRating(1)">★</button>
+                  <button type="button" class="star-pick-btn active" data-rating="2" onclick="PropertyDetailsController.setRating(2)">★</button>
+                  <button type="button" class="star-pick-btn active" data-rating="3" onclick="PropertyDetailsController.setRating(3)">★</button>
+                  <button type="button" class="star-pick-btn active" data-rating="4" onclick="PropertyDetailsController.setRating(4)">★</button>
+                  <button type="button" class="star-pick-btn active" data-rating="5" onclick="PropertyDetailsController.setRating(5)">★</button>
+                  <span id="starRatingText" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-left: 0.5rem;">5.0 - Excellent</span>
+                </div>
+                <input type="hidden" id="selectedRating" value="5" />
+              </div>
+
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <div>
+                  <label class="form-label" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem;">Your Name *</label>
+                  <input type="text" id="reviewAuthor" class="form-control" required placeholder="e.g. Rahul Sharma" />
+                </div>
+                <div>
+                  <label class="form-label" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem;">Your Email *</label>
+                  <input type="email" id="reviewEmail" class="form-control" required placeholder="e.g. rahul@example.com" />
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0.75rem;">
+                <label class="form-label" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem;">Review Title *</label>
+                <input type="text" id="reviewTitle" class="form-control" required placeholder="e.g. Outstanding spacious layout and prime location" />
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1rem;">
+                <label class="form-label" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem;">Your Detailed Feedback *</label>
+                <textarea id="reviewComment" class="form-control" rows="3" required placeholder="Describe property condition, neighborhood, ventilation, natural sunlight, or agent assistance..."></textarea>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                <button type="button" class="btn btn-ghost btn-sm" onclick="PropertyDetailsController.toggleReviewForm()">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm">Submit Review</button>
+              </div>
+            </form>
+
+            <!-- Reviews List -->
+            <div id="reviewsList" class="reviews-list">
+              <!-- Populated by PropertyDetailsController -->
+            </div>
+          </div>
+
         </div>
 
         <!-- Right Column: Sticky Agent Box -->

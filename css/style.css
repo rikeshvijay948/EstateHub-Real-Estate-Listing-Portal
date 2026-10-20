@@ -2451,6 +2451,46 @@ ul, ol {
 }
 
 /* ==========================================================
+   INTERACTIVE REVIEWS & STAR RATING PICKER
+   ========================================================== */
+.star-rating-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.star-pick-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  padding: 0 0.15rem;
+  line-height: 1;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.star-pick-btn:hover {
+  transform: scale(1.2);
+}
+
+.star-pick-btn.active {
+  color: #f59e0b;
+}
+
+[data-theme="dark"] .star-pick-btn {
+  color: #475569;
+}
+
+[data-theme="dark"] .star-pick-btn.active {
+  color: #fbbf24;
+}
+
+.review-item:last-child {
+  border-bottom: none !important;
+}
+
+/* ==========================================================
    PRINT MEDIA STYLESHEET / PROPERTY BROCHURE FLYER
    ========================================================== */
 @media print {
