@@ -2449,3 +2449,100 @@ ul, ol {
     left: 1rem;
   }
 }
+
+/* ==========================================================
+   PRINT MEDIA STYLESHEET / PROPERTY BROCHURE FLYER
+   ========================================================== */
+@media print {
+  *, *::before, *::after {
+    background: transparent !important;
+    color: #111827 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  body {
+    font-size: 11pt;
+    line-height: 1.5;
+    background: #ffffff !important;
+    color: #111827 !important;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Hide interactive, navigation, and floating UI elements */
+  .navbar,
+  .footer,
+  .mobile-menu-overlay,
+  .theme-toggle-btn,
+  .compare-floating-dock,
+  .toast-container,
+  .modal-backdrop,
+  .details-actions-bar,
+  .gallery-btn-prev,
+  .gallery-btn-next,
+  .gallery-thumbs-row,
+  .mortgage-calculator,
+  .similar-section,
+  .inquiry-card button,
+  .inquiry-card a {
+    display: none !important;
+  }
+
+  /* Show print banner */
+  .print-banner {
+    display: block !important;
+    margin-bottom: 24px !important;
+  }
+
+  .details-header {
+    margin-bottom: 1rem !important;
+  }
+
+  .details-main-grid {
+    display: block !important;
+  }
+
+  .gallery-main-img {
+    max-height: 360px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+    border-radius: 6px !important;
+    page-break-inside: avoid;
+    margin-bottom: 18px !important;
+  }
+
+  .details-specs-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 12px !important;
+    page-break-inside: avoid;
+    border: 1px solid #e2e8f0 !important;
+    padding: 12px !important;
+    border-radius: 6px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .details-card {
+    border: 1px solid #e2e8f0 !important;
+    page-break-inside: avoid;
+    margin-bottom: 16px !important;
+    padding: 14px !important;
+    border-radius: 6px !important;
+  }
+
+  .main-price {
+    font-size: 22pt !important;
+    color: #1d4ed8 !important;
+    font-weight: 800 !important;
+  }
+
+  .agent-profile-card {
+    page-break-inside: avoid;
+    border: 1px solid #cbd5e1 !important;
+    padding: 16px !important;
+    margin-top: 24px !important;
+    border-radius: 6px !important;
+  }
+}
+
