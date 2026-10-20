@@ -1,0 +1,16 @@
+# Dependencies and local environments
+node_modules/
+.vscode/
+.idea/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary and build artifacts
+*.tmp
+*.bak
+dist/
+build/
