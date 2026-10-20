@@ -15,6 +15,7 @@ const App = {
     this.setupToasts();
     this.setupModals();
     this.setupMobileMenu();
+    this.setupCompareDock();
 
     // Listen to favorites update to update header badge dynamically
     window.addEventListener("favoritesUpdated", () => {
@@ -129,6 +130,7 @@ const App = {
     if (!prop) return "";
 
     const isFav = StorageManager.isFavorite(prop.id);
+    const isCompared = StorageManager.isCompared(prop.id);
     const firstImage = (prop.images && prop.images.length > 0) ? prop.images[0] : this.getFallbackImage();
     const formattedPrice = this.formatPrice(prop.price, prop.listingType);
     const listingLabel = prop.listingType === "rent" ? "For Rent" : "For Sale";
@@ -149,6 +151,20 @@ const App = {
             ${prop.featured ? '<span class="badge badge-featured"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Featured</span>' : ""}
           </div>
           
+          <button 
+            type="button" 
+            class="compare-card-btn ${isCompared ? 'active' : ''}" 
+            data-id="${prop.id}" 
+            title="${isCompared ? 'Remove from comparison' : 'Compare property'}"
+            onclick="App.handleCompareClick(event, '${prop.id}')"
+            aria-label="Compare property"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"></path>
+            </svg>
+            <span>${isCompared ? 'Added' : 'Compare'}</span>
+          </button>
+
           <button 
             type="button" 
             class="fav-btn ${isFav ? 'active' : ''}" 
@@ -260,8 +276,203 @@ const App = {
   },
 
   /**
-   * Remove favorite helper from Favorites page.
+   * Handles compare button click on property cards.
    */
+  handleCompareClick(event, id) {
+    event.preventDefault();
+    event.stopPropagation();
+    const result = StorageManager.toggleCompare(id);
+    if (!result.success && result.message) {
+      this.showToast(result.message, "warning");
+      return;
+    }
+
+    const buttons = document.querySelectorAll(`.compare-card-btn[data-id="${id}"]`);
+    buttons.forEach(btn => {
+      const span = btn.querySelector("span");
+      if (result.isCompared) {
+        btn.classList.add("active");
+        btn.setAttribute("title", "Remove from comparison");
+        if (span) span.textContent = "Added";
+      } else {
+        btn.classList.remove("active");
+        btn.setAttribute("title", "Compare property");
+        if (span) span.textContent = "Compare";
+      }
+    });
+
+    if (result.isCompared) {
+      this.showToast("Property added to comparison dock!", "success");
+    } else {
+      this.showToast("Property removed from comparison.", "info");
+    }
+  },
+
+  /**
+   * Sets up floating comparison dock and event listener.
+   */
+  setupCompareDock() {
+    let dock = document.getElementById("compareFloatingDock");
+    if (!dock) {
+      dock = document.createElement("div");
+      dock.id = "compareFloatingDock";
+      dock.className = "compare-floating-dock";
+      dock.style.display = "none";
+      document.body.appendChild(dock);
+    }
+
+    this.renderCompareDock();
+
+    window.addEventListener("comparisonUpdated", () => {
+      this.renderCompareDock();
+    });
+  },
+
+  /**
+   * Renders the floating comparison bar at bottom of screen.
+   */
+  renderCompareDock() {
+    const dock = document.getElementById("compareFloatingDock");
+    if (!dock) return;
+
+    const list = StorageManager.getComparedProperties();
+    if (list.length === 0) {
+      dock.style.display = "none";
+      return;
+    }
+
+    dock.style.display = "block";
+    dock.innerHTML = `
+      <div class="compare-dock-inner">
+        <div class="compare-dock-info">
+          <strong>Compare (${list.length}/3)</strong>
+          <span>Select up to 3 properties</span>
+        </div>
+        <div class="compare-dock-items">
+          ${list.map(prop => `
+            <div class="compare-dock-item" title="${prop.title}">
+              <img src="${(prop.images && prop.images[0]) || this.getFallbackImage()}" alt="${prop.title}" onerror="this.onerror=null; this.src='${this.getFallbackImage()}';" />
+              <button type="button" class="compare-dock-remove" onclick="App.removeCompareItem('${prop.id}')" title="Remove property">&times;</button>
+            </div>
+          `).join("")}
+        </div>
+        <div class="compare-dock-actions">
+          <button type="button" class="btn btn-primary btn-sm" onclick="App.openCompareModal()">
+            Compare Now (${list.length})
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="App.clearCompare()" title="Clear queue">
+            Clear
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * Removes a single property from comparison queue.
+   */
+  removeCompareItem(id) {
+    StorageManager.toggleCompare(id);
+    const buttons = document.querySelectorAll(`.compare-card-btn[data-id="${id}"]`);
+    buttons.forEach(btn => {
+      btn.classList.remove("active");
+      btn.setAttribute("title", "Compare property");
+      const span = btn.querySelector("span");
+      if (span) span.textContent = "Compare";
+    });
+    this.showToast("Removed from comparison", "info");
+  },
+
+  /**
+   * Clears the entire comparison queue.
+   */
+  clearCompare() {
+    StorageManager.clearComparison();
+    const buttons = document.querySelectorAll(".compare-card-btn");
+    buttons.forEach(btn => {
+      btn.classList.remove("active");
+      btn.setAttribute("title", "Compare property");
+      const span = btn.querySelector("span");
+      if (span) span.textContent = "Compare";
+    });
+    this.showToast("Comparison cleared", "info");
+  },
+
+  /**
+   * Opens side-by-side modal comparison table.
+   */
+  openCompareModal() {
+    const list = StorageManager.getComparedProperties();
+    if (list.length < 2) {
+      this.showToast("Please select at least 2 properties to compare side-by-side.", "warning");
+      return;
+    }
+
+    let modal = document.getElementById("compareModal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "compareModal";
+      modal.className = "modal-backdrop";
+      document.body.appendChild(modal);
+    }
+
+    const rows = [
+      { label: "Preview", render: p => `<div class="compare-prop-thumb"><img src="${(p.images && p.images[0]) || this.getFallbackImage()}" alt="${p.title}" style="width:100%;height:110px;object-fit:cover;border-radius:var(--radius-md);" /><strong style="display:block;margin-top:0.4rem;font-size:0.85rem;">${p.title}</strong><a href="./property-details.html?id=${p.id}" class="btn btn-primary btn-xs mt-1" style="display:inline-block;padding:0.25rem 0.6rem;font-size:0.75rem;">View Listing</a></div>` },
+      { label: "Price", render: p => `<strong style="color:var(--brand);">${this.formatPrice(p.price, p.listingType)}</strong>` },
+      { label: "Type", render: p => `<span class="badge ${p.listingType === 'rent' ? 'badge-rent' : 'badge-sale'}">${p.listingType === 'rent' ? 'For Rent' : 'For Sale'}</span> - ${p.propertyType || 'Residential'}` },
+      { label: "Location", render: p => `${p.city || ''}, ${p.state || ''}` },
+      { label: "Bedrooms", render: p => `${p.bedrooms || 0} BHK` },
+      { label: "Bathrooms", render: p => `${p.bathrooms || 0} Baths` },
+      { label: "Area", render: p => `${p.area} sq.ft (${Math.round(p.price / (p.area || 1))}/sq.ft)` },
+      { label: "Furnishing", render: p => p.furnishing || "Unfurnished" },
+      { label: "Amenities", render: p => (p.amenities && p.amenities.length > 0) ? `<div style="display:flex;flex-wrap:wrap;gap:0.25rem;">${p.amenities.map(a => `<span class="badge" style="font-size:0.7rem;background:var(--bg-card);border:1px solid var(--border);">${a}</span>`).join('')}</div>` : "N/A" }
+    ];
+
+    modal.innerHTML = `
+      <div class="modal-dialog modal-lg" style="max-width:960px;width:95%;">
+        <div class="modal-header">
+          <h3 class="modal-title">Property Comparison</h3>
+          <button type="button" class="modal-close" onclick="App.closeCompareModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="overflow-x:auto;">
+          <table class="compare-table" style="width:100%;border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th style="width:140px;background:var(--bg-muted);">Features</th>
+                ${list.map(p => `<th>${p.title}</th>`).join("")}
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr>
+                  <td style="font-weight:600;background:var(--bg-muted);">${row.label}</td>
+                  ${list.map(p => `<td>${row.render(p)}</td>`).join("")}
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer" style="display:flex;justify-content:space-between;">
+          <button type="button" class="btn btn-outline" onclick="App.clearCompare(); App.closeCompareModal();">Clear All</button>
+          <button type="button" class="btn btn-secondary" onclick="App.closeCompareModal()">Close</button>
+        </div>
+      </div>
+    `;
+
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  },
+
+  /**
+   * Closes compare modal dialog.
+   */
+  closeCompareModal() {
+    const modal = document.getElementById("compareModal");
+    if (modal) {
+      modal.classList.remove("active");
+    }
+    document.body.style.overflow = "";
+  },
   removeFavoriteCard(event, id) {
     event.preventDefault();
     event.stopPropagation();

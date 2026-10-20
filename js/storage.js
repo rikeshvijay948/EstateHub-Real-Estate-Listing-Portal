@@ -8,7 +8,8 @@ const STORAGE_KEYS = {
   USERS: "estatehub_users",
   CURRENT_USER: "estatehub_current_user",
   FAVORITES: "estatehub_favorites",
-  INQUIRIES: "estatehub_inquiries"
+  INQUIRIES: "estatehub_inquiries",
+  COMPARE: "estatehub_compare"
 };
 
 const StorageManager = {
@@ -345,6 +346,78 @@ const StorageManager = {
     inquiries[index].status = status;
     localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(inquiries));
     return true;
+  },
+
+  /* ==========================================================
+     PROPERTY COMPARISON
+     ========================================================== */
+
+  /**
+   * Returns list of property IDs in comparison queue.
+   * @returns {Array<string>}
+   */
+  getComparison() {
+    this.init();
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.COMPARE);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  /**
+   * Checks if property is in comparison queue.
+   * @param {string} id
+   * @returns {boolean}
+   */
+  isCompared(id) {
+    const list = this.getComparison();
+    return list.includes(String(id));
+  },
+
+  /**
+   * Toggles property in comparison queue (max 3).
+   * @param {string} id
+   * @returns {{ success: boolean, isCompared: boolean, message?: string }}
+   */
+  toggleCompare(id) {
+    const list = this.getComparison();
+    const strId = String(id);
+    const index = list.indexOf(strId);
+
+    if (index > -1) {
+      list.splice(index, 1);
+      localStorage.setItem(STORAGE_KEYS.COMPARE, JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent("comparisonUpdated", { detail: { id: strId, isCompared: false, list } }));
+      return { success: true, isCompared: false };
+    } else {
+      if (list.length >= 3) {
+        return { success: false, isCompared: false, message: "You can compare up to 3 properties at a time." };
+      }
+      list.push(strId);
+      localStorage.setItem(STORAGE_KEYS.COMPARE, JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent("comparisonUpdated", { detail: { id: strId, isCompared: true, list } }));
+      return { success: true, isCompared: true };
+    }
+  },
+
+  /**
+   * Clears comparison queue.
+   */
+  clearComparison() {
+    localStorage.setItem(STORAGE_KEYS.COMPARE, JSON.stringify([]));
+    window.dispatchEvent(new CustomEvent("comparisonUpdated", { detail: { list: [] } }));
+  },
+
+  /**
+   * Returns property objects for comparison.
+   * @returns {Array<Object>}
+   */
+  getComparedProperties() {
+    const ids = this.getComparison();
+    const properties = this.getProperties();
+    return properties.filter(p => ids.includes(String(p.id)));
   },
 
   /* ==========================================================
