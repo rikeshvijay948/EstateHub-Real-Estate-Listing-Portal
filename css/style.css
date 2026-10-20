@@ -48,6 +48,90 @@
   --container-max: 1240px;
 }
 
+/* --- Dark Theme Palette Overrides --- */
+[data-theme="dark"] {
+  --primary: #f8fafc;
+  --primary-light: #e2e8f0;
+  --brand-light: #1e293b;
+  --bg-main: #0b1120;
+  --bg-surface: #131d33;
+  --bg-alt: #1a2642;
+  --bg-dark: #070d18;
+
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+  --border: #223254;
+  --border-focus: #3b82f6;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .site-header {
+  background-color: rgba(19, 29, 51, 0.95);
+}
+
+[data-theme="dark"] .hero-section {
+  background: radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.22), transparent 45%),
+              linear-gradient(180deg, #0b1120 0%, #131d33 100%);
+}
+
+[data-theme="dark"] .hero-image-card {
+  border-color: #1e293b;
+}
+
+[data-theme="dark"] .hero-floating-badge {
+  background-color: rgba(19, 29, 51, 0.95);
+}
+
+[data-theme="dark"] .calculator-card {
+  background: linear-gradient(180deg, var(--bg-surface) 0%, #172554 100%);
+  border-color: #1e3a8a;
+}
+
+[data-theme="dark"] .user-pill {
+  background-color: var(--bg-surface);
+}
+
+[data-theme="dark"] .custom-table tr:hover td {
+  background-color: #1a2642;
+}
+
+[data-theme="dark"] .custom-table th {
+  background-color: #1a2642;
+}
+
+[data-theme="dark"] .toast {
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background-color: var(--bg-surface);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+  background-color: var(--brand-light);
+  transform: translateY(-1px);
+}
+
 /* --- Base & Reset --- */
 *, *::before, *::after {
   box-sizing: border-box;
