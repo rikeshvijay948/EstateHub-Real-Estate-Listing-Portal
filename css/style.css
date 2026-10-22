@@ -1567,6 +1567,119 @@ ul, ol {
   gap: 0.75rem;
 }
 
+.view-mode-toggle {
+  display: inline-flex;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  gap: 2px;
+}
+
+.view-mode-btn {
+  background: transparent;
+  border: none;
+  padding: 0.4rem 0.55rem;
+  border-radius: calc(var(--radius-md) - 2px);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.view-mode-btn:hover {
+  color: var(--text-main);
+}
+
+.view-mode-btn.active {
+  background: var(--brand);
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.quick-filter-chips-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  padding: 0.25rem 0;
+}
+
+.quick-chip {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.quick-chip:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.quick-chip.active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+/* --- List View Layout for Properties --- */
+.properties-grid.list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.properties-grid.list-view .property-card {
+  display: grid;
+  grid-template-columns: 290px 1fr 180px;
+  align-items: stretch;
+  flex-direction: row;
+}
+
+.properties-grid.list-view .card-image-wrap {
+  height: 100%;
+  min-height: 200px;
+}
+
+.properties-grid.list-view .card-body {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.properties-grid.list-view .card-footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-top: none;
+  border-left: 1px solid var(--border);
+  padding: 1.25rem;
+  background: var(--bg-surface);
+}
+
+@media (max-width: 991px) {
+  .properties-grid.list-view .property-card {
+    grid-template-columns: 1fr;
+  }
+  .properties-grid.list-view .card-image-wrap {
+    height: 230px;
+  }
+  .properties-grid.list-view .card-footer {
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+}
+
 .active-filters-bar {
   display: flex;
   align-items: center;

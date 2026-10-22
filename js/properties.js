@@ -20,11 +20,97 @@ const PropertiesController = {
     amenities: []
   },
   sortBy: "featured",
+  viewMode: "grid",
 
   init() {
     this.allProperties = StorageManager.getProperties();
     this.parseUrlParams();
+    this.initViewMode();
     this.bindEvents();
+    this.syncFormControls();
+    this.applyFilters();
+  },
+
+  /**
+   * Initializes view mode (Grid or List) from localStorage.
+   */
+  initViewMode() {
+    const saved = localStorage.getItem("estatehub_view_mode") || "grid";
+    this.setViewMode(saved, false);
+  },
+
+  /**
+   * Sets grid or list view mode and updates UI controls.
+   */
+  setViewMode(mode, triggerRender = true) {
+    this.viewMode = mode === "list" ? "list" : "grid";
+    try {
+      localStorage.setItem("estatehub_view_mode", this.viewMode);
+    } catch (e) {}
+
+    const gridBtn = document.getElementById("viewGridBtn");
+    const listBtn = document.getElementById("viewListBtn");
+    if (gridBtn && listBtn) {
+      if (this.viewMode === "list") {
+        listBtn.classList.add("active");
+        gridBtn.classList.remove("active");
+      } else {
+        gridBtn.classList.add("active");
+        listBtn.classList.remove("active");
+      }
+    }
+
+    const grid = document.getElementById("propertiesGrid");
+    if (grid) {
+      if (this.viewMode === "list") {
+        grid.classList.add("list-view");
+      } else {
+        grid.classList.remove("list-view");
+      }
+    }
+
+    if (triggerRender) {
+      this.render();
+    }
+  },
+
+  /**
+   * Handles 1-click Quick Filter presets.
+   */
+  applyQuickFilter(filterKey) {
+    document.querySelectorAll(".quick-chip").forEach(chip => {
+      if (chip.dataset.filter === filterKey) {
+        chip.classList.add("active");
+      } else {
+        chip.classList.remove("active");
+      }
+    });
+
+    switch (filterKey) {
+      case "under1cr":
+        this.filters.maxPrice = 10000000;
+        break;
+      case "rent":
+        this.filters.listingType = "rent";
+        break;
+      case "apartments":
+        this.filters.propertyType = "apartment";
+        break;
+      case "villas":
+        this.filters.propertyType = "villa";
+        break;
+      case "3bhk":
+        this.filters.bedrooms = "3";
+        break;
+      case "all":
+      default:
+        this.filters.listingType = "all";
+        this.filters.propertyType = "all";
+        this.filters.maxPrice = null;
+        this.filters.bedrooms = "all";
+        break;
+    }
+
     this.syncFormControls();
     this.applyFilters();
   },
@@ -307,6 +393,12 @@ const PropertiesController = {
 
     if (!grid) return;
 
+    if (this.viewMode === "list") {
+      grid.classList.add("list-view");
+    } else {
+      grid.classList.remove("list-view");
+    }
+
     if (this.filteredProperties.length === 0) {
       grid.innerHTML = `
         <div class="empty-state" style="grid-column: 1 / -1;">
@@ -470,6 +562,12 @@ const PropertiesController = {
 
     document.querySelectorAll(".amenity-filter-cb").forEach(cb => {
       cb.checked = false;
+    });
+
+    // Reset Quick Filter chips
+    document.querySelectorAll(".quick-chip").forEach(chip => {
+      if (chip.dataset.filter === "all") chip.classList.add("active");
+      else chip.classList.remove("active");
     });
 
     // Clear URL parameters smoothly without reload
