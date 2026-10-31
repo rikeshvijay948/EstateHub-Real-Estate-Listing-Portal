@@ -367,6 +367,23 @@
         </div>
       </section>
 
+      <!-- Recently Viewed Properties Section -->
+      <section class="section" id="recentlyViewedSection" style="display: none;">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+          <div style="text-align: left;">
+            <span class="section-tag">Browsing History</span>
+            <h2 class="section-title" style="font-size: 1.75rem; margin-bottom: 0;">Recently Viewed Properties</h2>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="App.clearRecentlyViewed()" style="color: var(--text-muted);">
+            Clear History
+          </button>
+        </div>
+
+        <div id="recentlyViewedGrid" class="properties-grid">
+          <!-- Populated by JavaScript -->
+        </div>
+      </section>
+
     </div>
   </div>
 

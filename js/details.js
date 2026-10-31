@@ -33,6 +33,10 @@ const PropertyDetailsController = {
     this.initInquiryForm();
     this.initReviews();
     this.renderSimilarProperties();
+
+    // Record viewing & render recently viewed
+    StorageManager.addRecentlyViewed(this.property.id);
+    this.renderRecentlyViewed();
   },
 
   /**
@@ -567,6 +571,13 @@ const PropertyDetailsController = {
     }
 
     container.innerHTML = similar.map(p => App.createPropertyCard(p)).join("");
+  },
+
+  /**
+   * Renders recently viewed properties section excluding the current property.
+   */
+  renderRecentlyViewed() {
+    App.renderRecentlyViewedGrid("recentlyViewedGrid", "recentlyViewedSection", this.property.id);
   }
 };
 

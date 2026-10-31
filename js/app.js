@@ -682,6 +682,43 @@ const App = {
       modal.classList.remove("active");
       document.body.classList.remove("no-scroll");
     }
+  },
+
+  /**
+   * Renders recently viewed properties in a specified grid container.
+   * @param {string} gridId
+   * @param {string} sectionId
+   * @param {string} [excludeId]
+   */
+  renderRecentlyViewedGrid(gridId, sectionId, excludeId = null) {
+    const grid = document.getElementById(gridId);
+    const section = document.getElementById(sectionId);
+    if (!grid) return;
+
+    let props = StorageManager.getRecentlyViewedProperties();
+    if (excludeId) {
+      props = props.filter(p => String(p.id) !== String(excludeId));
+    }
+
+    if (props.length === 0) {
+      if (section) section.style.display = "none";
+      return;
+    }
+
+    if (section) section.style.display = "block";
+    grid.innerHTML = props.slice(0, 4).map(p => this.createPropertyCard(p)).join("");
+  },
+
+  /**
+   * Clears recently viewed properties and shows toast.
+   */
+  clearRecentlyViewed() {
+    StorageManager.clearRecentlyViewed();
+    this.showToast("Browsing history cleared.", "info");
+    const homeSection = document.getElementById("homeRecentlyViewedSection");
+    if (homeSection) homeSection.style.display = "none";
+    const detailSection = document.getElementById("recentlyViewedSection");
+    if (detailSection) detailSection.style.display = "none";
   }
 };
 

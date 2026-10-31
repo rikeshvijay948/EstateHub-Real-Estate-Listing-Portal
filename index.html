@@ -517,6 +517,23 @@
           </div>
         </div>
       </div>
+    <!-- Recently Viewed Properties Section -->
+    <section class="section" id="homeRecentlyViewedSection" style="display: none; background-color: var(--bg-alt);">
+      <div class="container">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+          <div style="text-align: left;">
+            <span class="section-tag">Pick Up Where You Left Off</span>
+            <h2 class="section-title" style="font-size: 1.75rem; margin-bottom: 0;">Recently Viewed Properties</h2>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="App.clearRecentlyViewed()" style="color: var(--text-muted);">
+            Clear History
+          </button>
+        </div>
+
+        <div id="homeRecentlyViewedGrid" class="properties-grid">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
     </section>
 
     <!-- 7. Call To Action (CTA) -->
@@ -624,6 +641,12 @@
 
       // Render Featured Properties
       renderHomeFeatured();
+
+      // Render Recently Viewed Properties
+      App.renderRecentlyViewedGrid("homeRecentlyViewedGrid", "homeRecentlyViewedSection");
+      window.addEventListener("recentlyViewedUpdated", () => {
+        App.renderRecentlyViewedGrid("homeRecentlyViewedGrid", "homeRecentlyViewedSection");
+      });
     });
 
     function handleHeroSearch(e) {

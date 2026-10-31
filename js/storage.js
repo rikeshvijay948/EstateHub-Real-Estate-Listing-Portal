@@ -10,7 +10,8 @@ const STORAGE_KEYS = {
   FAVORITES: "estatehub_favorites",
   INQUIRIES: "estatehub_inquiries",
   COMPARE: "estatehub_compare",
-  REVIEWS: "estatehub_reviews"
+  REVIEWS: "estatehub_reviews",
+  RECENTLY_VIEWED: "estatehub_recently_viewed"
 };
 
 const StorageManager = {
@@ -472,6 +473,60 @@ const StorageManager = {
   },
 
   /* ==========================================================
+     RECENTLY VIEWED PROPERTIES
+     ========================================================== */
+
+  /**
+   * Retrieves array of recently viewed property IDs (up to max 8).
+   * @returns {Array<string>}
+   */
+  getRecentlyViewed() {
+    this.init();
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.RECENTLY_VIEWED);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  /**
+   * Adds a property ID to recently viewed (most recent first, max 8, deduplicated).
+   * @param {string} id
+   */
+  addRecentlyViewed(id) {
+    if (!id) return;
+    const strId = String(id);
+    let list = this.getRecentlyViewed().filter(item => String(item) !== strId);
+    list.unshift(strId);
+    if (list.length > 8) {
+      list = list.slice(0, 8);
+    }
+    localStorage.setItem(STORAGE_KEYS.RECENTLY_VIEWED, JSON.stringify(list));
+    window.dispatchEvent(new CustomEvent("recentlyViewedUpdated", { detail: { id: strId, list } }));
+  },
+
+  /**
+   * Clears recently viewed properties.
+   */
+  clearRecentlyViewed() {
+    localStorage.setItem(STORAGE_KEYS.RECENTLY_VIEWED, JSON.stringify([]));
+    window.dispatchEvent(new CustomEvent("recentlyViewedUpdated", { detail: { list: [] } }));
+  },
+
+  /**
+   * Returns full property objects of recently viewed items.
+   * @returns {Array<Object>}
+   */
+  getRecentlyViewedProperties() {
+    const ids = this.getRecentlyViewed();
+    const allProps = this.getProperties();
+    return ids
+      .map(id => allProps.find(p => String(p.id) === String(id)))
+      .filter(Boolean);
+  },
+
+  /* ==========================================================
      DATA RESET & REFRESH
      ========================================================== */
 
@@ -486,6 +541,7 @@ const StorageManager = {
     if (typeof INITIAL_REVIEWS !== "undefined") {
       localStorage.setItem(STORAGE_KEYS.REVIEWS, JSON.stringify(INITIAL_REVIEWS));
     }
+    localStorage.setItem(STORAGE_KEYS.RECENTLY_VIEWED, JSON.stringify([]));
     window.location.reload();
   }
 };
