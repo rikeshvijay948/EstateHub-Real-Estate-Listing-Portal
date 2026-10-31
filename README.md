@@ -16,11 +16,19 @@
 
 - **🏠 Interactive Hero Search**: Quick filter by listing type (Buy/Rent), city, property category, bedrooms, and maximum budget with direct query synchronization to the listing directory.
 - **🔍 Multi-Facet Filter Engine**: Real-time filtering across keyword search, listing type, Indian cities (Mumbai, Bangalore, Hyderabad, Chennai, Pune, Goa, etc.), property type, price sliders, bedrooms (1–4+ BHK), area, and amenities.
-- **📄 Dynamic Property Details**: Image gallery with interactive thumbnails and navigation controls, 8-point specifications grid, verified agent contact cards, and similar property recommendations.
+- **🔀 Grid / List View Layout Toggle**: Switch dynamically between spacious 3-column cards and detailed horizontal list-view cards with quick filter chips (Under ₹1 Cr, For Rent, Apartments, Villas, 3+ BHK).
+- **🌓 Dark Mode & Light Mode**: Complete theme toggle with adaptive color palettes, smooth transition variables, and localStorage persistence.
+- **⚖️ Side-by-Side Property Comparison**: Compare up to 3 properties simultaneously via a floating comparison dock and responsive side-by-side spec modal.
+- **🖨️ Printable Property Brochure**: One-click printable real estate sales flyer with clean `@media print` styling, hiding unnecessary UI elements and highlighting photos, specs, and agent details.
+- **🌟 Verified Customer Reviews & Ratings**: Interactive 5-star rating submission form, calculated averages, and persistent review lists.
+- **🕒 Recently Viewed Properties**: Automated browsing history tracking displayed on homepage and listing details with clear history controls.
+- **📅 Schedule Site Tour Booking**: In-person or live video tour appointment scheduler with date picker, time slots, and dashboard management.
+- **🚆 Neighborhood & Nearby Landmarks**: Proximity explorer with category pills (Transit, Schools, Healthcare, Shopping, Dining), verified distance badges (km), and commute estimates.
+- **💱 Live Multi-Currency Converter**: Convert prices on-the-fly across **INR (₹)**, **USD ($)**, **EUR (€)**, **AED (د.إ)**, and **GBP (£)** without page reloads.
 - **💰 Financial Calculator**: Real-time Home Loan EMI calculator with sliders for principal, interest rate, and tenure.
 - **❤️ Favorites & Wishlist**: Toggle favorites from any property card; saves instantly to `localStorage` with header counter badge synchronization and dedicated wishlist management page.
 - **✍️ Full Property CRUD**: Add, edit, view, and delete property listings with automated form validation, image URL previews, and toast feedback.
-- **📊 Agent & Seller Dashboard**: Interactive dashboard showcasing metrics (Total Listings, Active Listings, Inquiries, Favorites), property inventory manager, and customer inquiries inbox.
+- **📊 Agent & Seller Dashboard**: Interactive dashboard showcasing metrics (Total Listings, Active Listings, Inquiries, Site Visits), property inventory manager, customer inquiries, and tour bookings.
 - **📬 Customer Inquiry System**: "Contact Agent" inquiry modal pre-populating property metadata, capturing buyer inquiries directly to the agent's dashboard.
 - **🔐 Simulated Authentication**: Client-side session management with 1-click **Demo Agent** and **Demo Buyer** login options for instant portfolio review.
 - **📱 Responsive & Accessible**: Mobile navigation drawer, fluid typography, subtle shadows, and responsive layouts across desktops, tablets, and phones.
@@ -96,12 +104,18 @@ Right-click `index.html` and choose **"Open with Live Server"**.
 
 ## 💾 LocalStorage Keys
 
-The simulated database manages state under the following keys:
+The simulated client-side database manages state under the following keys:
 - `estatehub_properties`: Catalog of all properties.
 - `estatehub_users`: Registered user accounts.
 - `estatehub_current_user`: Currently active user session.
 - `estatehub_favorites`: Array of favorited property IDs.
 - `estatehub_inquiries`: Customer messages and leads sent to agents.
+- `estatehub_compare`: Active property IDs in the comparison queue.
+- `estatehub_reviews`: Verified customer ratings and feedback.
+- `estatehub_recently_viewed`: Browsing history of viewed properties.
+- `estatehub_tours`: Scheduled in-person and video tour bookings.
+- `estatehub_currency`: Selected display currency (INR, USD, EUR, AED, GBP).
+- `estatehub_theme`: Active visual mode (`light` or `dark`).
 
 ---
 
