@@ -10,6 +10,7 @@ const App = {
    */
   init() {
     this.setupTheme();
+    this.setupCurrencySelector();
     this.setupNavbar();
     this.updateNavBadges();
     this.setupToasts();
@@ -25,6 +26,33 @@ const App = {
     // Listen to auth changes
     window.addEventListener("authStateChanged", () => {
       this.setupNavbar();
+    });
+
+    // Listen to currency changes to refresh prices across views
+    window.addEventListener("currencyChanged", () => {
+      if (typeof PropertiesController !== "undefined" && typeof PropertiesController.render === "function") {
+        PropertiesController.render();
+      }
+      if (typeof PropertyDetailsController !== "undefined" && PropertyDetailsController.property) {
+        PropertyDetailsController.renderDetails();
+      }
+      if (typeof renderFavoritesGrid === "function") {
+        renderFavoritesGrid();
+      }
+      if (typeof renderHomeFeatured === "function") {
+        renderHomeFeatured();
+      }
+      if (typeof DashboardController !== "undefined" && typeof DashboardController.renderPropertiesTable === "function") {
+        DashboardController.renderPropertiesTable();
+      }
+      const homeRecent = document.getElementById("homeRecentlyViewedGrid");
+      if (homeRecent) {
+        this.renderRecentlyViewedGrid("homeRecentlyViewedGrid", "homeRecentlyViewedSection");
+      }
+      const detailRecent = document.getElementById("recentlyViewedGrid");
+      if (detailRecent && typeof PropertyDetailsController !== "undefined" && PropertyDetailsController.property) {
+        this.renderRecentlyViewedGrid("recentlyViewedGrid", "recentlyViewedSection", PropertyDetailsController.property.id);
+      }
     });
   },
 
@@ -87,29 +115,105 @@ const App = {
     </svg>`;
   },
 
+  CURRENCIES: {
+    INR: { symbol: "₹", rate: 1.0, label: "₹ INR" },
+    USD: { symbol: "$", rate: 0.012, label: "$ USD" },
+    EUR: { symbol: "€", rate: 0.011, label: "€ EUR" },
+    AED: { symbol: "AED ", rate: 0.044, label: "د.إ AED" },
+    GBP: { symbol: "£", rate: 0.0095, label: "£ GBP" }
+  },
+
+  getCurrency() {
+    return localStorage.getItem("estatehub_currency") || "INR";
+  },
+
+  setCurrency(curr) {
+    if (!this.CURRENCIES[curr]) curr = "INR";
+    localStorage.setItem("estatehub_currency", curr);
+    this.showToast(`Display currency changed to ${curr}`, "info", 2000);
+    window.dispatchEvent(new CustomEvent("currencyChanged", { detail: { currency: curr } }));
+  },
+
   /**
-   * Formats Indian Rupee (INR) prices elegantly.
-   * e.g. ₹1.85 Cr, ₹88 Lac, ₹45,000 / mo
-   * @param {number} amount
+   * Initializes dynamic multi-currency selector in navbar.
+   */
+  setupCurrencySelector() {
+    const navActions = document.querySelector(".nav-actions");
+    if (navActions && !document.getElementById("currencySelector")) {
+      const select = document.createElement("select");
+      select.id = "currencySelector";
+      select.className = "currency-select";
+      select.setAttribute("aria-label", "Select Currency");
+      select.setAttribute("title", "Select Currency Converter");
+
+      const current = this.getCurrency();
+
+      Object.keys(this.CURRENCIES).forEach(key => {
+        const opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = this.CURRENCIES[key].label;
+        if (key === current) opt.selected = true;
+        select.appendChild(opt);
+      });
+
+      select.addEventListener("change", (e) => {
+        this.setCurrency(e.target.value);
+      });
+
+      // Insert before theme toggle or hamburger
+      const themeBtn = document.getElementById("themeToggleBtn");
+      if (themeBtn) {
+        navActions.insertBefore(select, themeBtn);
+      } else {
+        const hamburger = navActions.querySelector(".hamburger-btn");
+        if (hamburger) {
+          navActions.insertBefore(select, hamburger);
+        } else {
+          navActions.appendChild(select);
+        }
+      }
+    }
+  },
+
+  /**
+   * Formats property price dynamically using the user's chosen currency (INR, USD, EUR, AED, GBP).
+   * @param {number} amount - Base price in INR
    * @param {string} listingType - 'sale' or 'rent'
    * @returns {string}
    */
   formatPrice(amount, listingType = "sale") {
     if (isNaN(amount) || amount === null || amount === undefined) return "Price on Request";
     const num = Number(amount);
+    const currKey = this.getCurrency();
+    const curr = this.CURRENCIES[currKey] || this.CURRENCIES.INR;
+    const converted = num * curr.rate;
 
-    if (listingType === "rent") {
-      return `₹${num.toLocaleString("en-IN")} <span class="price-unit">/ month</span>`;
-    }
+    if (currKey === "INR") {
+      if (listingType === "rent") {
+        return `₹${num.toLocaleString("en-IN")} <span class="price-unit">/ month</span>`;
+      }
 
-    if (num >= 10000000) {
-      const cr = (num / 10000000).toFixed(2).replace(/\.00$/, "");
-      return `₹${cr} Cr`;
-    } else if (num >= 100000) {
-      const lac = (num / 100000).toFixed(2).replace(/\.00$/, "");
-      return `₹${lac} Lakhs`;
+      if (num >= 10000000) {
+        const cr = (num / 10000000).toFixed(2).replace(/\.00$/, "");
+        return `₹${cr} Cr`;
+      } else if (num >= 100000) {
+        const lac = (num / 100000).toFixed(2).replace(/\.00$/, "");
+        return `₹${lac} Lakhs`;
+      } else {
+        return `₹${num.toLocaleString("en-IN")}`;
+      }
     } else {
-      return `₹${num.toLocaleString("en-IN")}`;
+      if (listingType === "rent") {
+        return `${curr.symbol}${Math.round(converted).toLocaleString()} <span class="price-unit">/ month</span>`;
+      }
+
+      if (converted >= 1000000) {
+        return `${curr.symbol}${(converted / 1000000).toFixed(2).replace(/\.00$/, "")}M`;
+      } else if (converted >= 1000) {
+        return `${curr.symbol}${(converted / 1000).toFixed(1).replace(/\.0$/, "")}K`;
+      } else {
+        return `${curr.symbol}${Math.round(converted).toLocaleString()}`;
+      }
     }
   },
 

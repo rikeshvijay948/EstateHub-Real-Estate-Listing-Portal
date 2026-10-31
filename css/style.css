@@ -132,6 +132,31 @@
   transform: translateY(-1px);
 }
 
+/* Currency Selector */
+.currency-select {
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 700;
+  height: 40px;
+  padding: 0 0.65rem;
+  cursor: pointer;
+  transition: var(--transition);
+  outline: none;
+}
+
+.currency-select:hover, .currency-select:focus {
+  border-color: var(--brand);
+}
+
+[data-theme="dark"] .currency-select {
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  border-color: var(--border);
+}
+
 /* Compare Button on Cards */
 .compare-card-btn {
   position: absolute;

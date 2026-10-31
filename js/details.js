@@ -87,6 +87,7 @@ const PropertyDetailsController = {
     if (headerTitle) headerTitle.textContent = p.title;
     if (headerAddress) headerAddress.textContent = `${p.address}, ${p.city}, ${p.state} - ${p.pincode || ""}`;
     if (headerPrice) headerPrice.innerHTML = App.formatPrice(p.price, p.listingType);
+    if (typeof this.recalculateEmi === "function") this.recalculateEmi();
     if (headerBadges) {
       headerBadges.innerHTML = `
         <span class="badge ${listingBadgeClass}">${listingLabel}</span>
@@ -313,13 +314,15 @@ const PropertyDetailsController = {
       const totalAmount = emi * n;
       const totalInterest = totalAmount - P;
 
-      if (loanDisplay) loanDisplay.textContent = `₹${P.toLocaleString("en-IN")}`;
+      if (loanDisplay) loanDisplay.textContent = App.formatPrice(P, "sale");
       if (rateDisplay) rateDisplay.textContent = `${interestRateInput.value}%`;
       if (tenureDisplay) tenureDisplay.textContent = `${tenureInput.value} Years`;
 
-      if (emiOutput) emiOutput.textContent = `₹${emi.toLocaleString("en-IN")}`;
-      if (totalInterestOutput) totalInterestOutput.textContent = `₹${totalInterest.toLocaleString("en-IN")}`;
+      if (emiOutput) emiOutput.innerHTML = App.formatPrice(emi, "rent");
+      if (totalInterestOutput) totalInterestOutput.textContent = App.formatPrice(totalInterest, "sale");
     };
+
+    this.recalculateEmi = calculate;
 
     if (loanAmountInput) loanAmountInput.addEventListener("input", calculate);
     if (interestRateInput) interestRateInput.addEventListener("input", calculate);
