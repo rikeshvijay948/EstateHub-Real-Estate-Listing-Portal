@@ -906,3 +906,40 @@ const INITIAL_REVIEWS = [
   }
 ];
 
+// Initial sample site visit tours
+const INITIAL_TOURS = [
+  {
+    id: "tour-1",
+    propertyId: "prop-1",
+    propertyTitle: "Luxurious 4 BHK Sea-Facing Penthouse",
+    propertyPrice: 185000000,
+    propertyImage: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80",
+    clientName: "Rahul Deshmukh",
+    clientEmail: "rahul.deshmukh@gmail.com",
+    clientPhone: "+91 98200 11223",
+    tourType: "in_person",
+    tourDate: "2026-11-05",
+    timeSlot: "11:00 AM - 12:30 PM",
+    notes: "Client interested in Arabian Sea views and parking slots.",
+    status: "confirmed",
+    createdAt: "2026-10-25T10:00:00Z"
+  },
+  {
+    id: "tour-2",
+    propertyId: "prop-2",
+    propertyTitle: "Ultra-Luxury 5 BHK Independent Villa in Whitefield",
+    propertyPrice: 125000000,
+    propertyImage: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=600&q=80",
+    clientName: "Sanya Kapoor",
+    clientEmail: "sanya.k@hotmail.com",
+    clientPhone: "+91 99100 88776",
+    tourType: "video_call",
+    tourDate: "2026-11-06",
+    timeSlot: "03:00 PM - 04:00 PM",
+    notes: "Live WhatsApp/Zoom video walkthrough of master suite and pool.",
+    status: "confirmed",
+    createdAt: "2026-10-26T14:30:00Z"
+  }
+];
+
+

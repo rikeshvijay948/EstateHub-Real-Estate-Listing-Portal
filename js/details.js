@@ -378,6 +378,66 @@ const PropertyDetailsController = {
   },
 
   /**
+   * Opens the tour booking modal with prefilled data.
+   */
+  openTourModal() {
+    const titleEl = document.getElementById("tourModalPropTitle");
+    if (titleEl) titleEl.textContent = this.property.title;
+
+    // Set minimum date to tomorrow
+    const dateInput = document.getElementById("tourDateInput");
+    if (dateInput) {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      dateInput.min = tomorrow.toISOString().split("T")[0];
+      if (!dateInput.value) {
+        dateInput.value = tomorrow.toISOString().split("T")[0];
+      }
+    }
+
+    // Prefill user details if logged in
+    const user = StorageManager.getCurrentUser();
+    if (user) {
+      const nameInput = document.getElementById("tourClientName");
+      const emailInput = document.getElementById("tourClientEmail");
+      const phoneInput = document.getElementById("tourClientPhone");
+      if (nameInput) nameInput.value = user.fullName || "";
+      if (emailInput) emailInput.value = user.email || "";
+      if (phoneInput && user.phone) phoneInput.value = user.phone || "";
+    }
+
+    App.openModal("tourModal");
+  },
+
+  /**
+   * Handles tour booking submission.
+   */
+  handleTourSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const tourData = {
+      propertyId: this.property.id,
+      propertyTitle: this.property.title,
+      propertyPrice: this.property.price,
+      propertyImage: this.property.images && this.property.images[0] ? this.property.images[0] : "",
+      clientName: formData.get("clientName"),
+      clientEmail: formData.get("clientEmail"),
+      clientPhone: formData.get("clientPhone"),
+      tourType: formData.get("tourType"),
+      tourDate: formData.get("tourDate"),
+      timeSlot: formData.get("timeSlot"),
+      notes: formData.get("notes")
+    };
+
+    StorageManager.addTour(tourData);
+    App.closeModal("tourModal");
+    form.reset();
+    App.showToast("Site Tour scheduled! The listing agent will confirm your appointment shortly.", "success", 5000);
+  },
+
+  /**
    * Initializes and renders customer reviews for this property.
    */
   initReviews() {

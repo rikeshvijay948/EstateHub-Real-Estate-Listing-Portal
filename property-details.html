@@ -336,15 +336,25 @@
             </div>
 
             <div class="agent-contact-actions">
-              <button type="button" id="openInquiryModalBtn" class="btn btn-primary btn-block btn-lg">
+              <button type="button" id="openTourModalBtn" class="btn btn-primary btn-block btn-lg" onclick="PropertyDetailsController.openTourModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                Schedule Site Tour
+              </button>
+
+              <button type="button" id="openInquiryModalBtn" class="btn btn-outline btn-block btn-lg">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                 </svg>
                 Contact Agent
               </button>
 
-              <a id="agentCallBtn" href="tel:+919820154321" class="btn btn-outline btn-block btn-lg">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <a id="agentCallBtn" href="tel:+919820154321" class="btn btn-ghost btn-block">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                 </svg>
                 Call Directly
@@ -425,6 +435,87 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-ghost" data-close-modal>Cancel</button>
           <button type="submit" class="btn btn-primary">Send Inquiry Message</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Schedule Property Tour Modal -->
+  <div id="tourModal" class="modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Schedule a Property Visit</h3>
+        <button type="button" class="modal-close-btn" data-close-modal aria-label="Close modal">&times;</button>
+      </div>
+      
+      <form id="propertyTourForm" onsubmit="PropertyDetailsController.handleTourSubmit(event)">
+        <div class="modal-body">
+          <div style="background-color: var(--brand-light); padding: 0.85rem 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; font-size: 0.875rem;">
+            Scheduling visit for: <strong id="tourModalPropTitle" style="color: var(--brand);">Property</strong>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Visit Type <span class="required">*</span></label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem; border: 1px solid var(--border); padding: 0.75rem 1rem; border-radius: var(--radius-md); cursor: pointer; background: var(--bg-surface);">
+                <input type="radio" name="tourType" value="in_person" checked />
+                <div>
+                  <strong style="display: block; font-size: 0.9rem;">🏢 In-Person Tour</strong>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">Meet agent at property</span>
+                </div>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; border: 1px solid var(--border); padding: 0.75rem 1rem; border-radius: var(--radius-md); cursor: pointer; background: var(--bg-surface);">
+                <input type="radio" name="tourType" value="video_call" />
+                <div>
+                  <strong style="display: block; font-size: 0.9rem;">📹 Live Video Tour</strong>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">Via WhatsApp / Zoom</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Preferred Date <span class="required">*</span></label>
+              <input type="date" id="tourDateInput" name="tourDate" class="form-control" required />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Preferred Time Slot <span class="required">*</span></label>
+              <select name="timeSlot" class="form-select" required>
+                <option value="10:00 AM - 11:30 AM">10:00 AM - 11:30 AM</option>
+                <option value="11:30 AM - 01:00 PM">11:30 AM - 01:00 PM</option>
+                <option value="02:30 PM - 04:00 PM" selected>02:30 PM - 04:00 PM</option>
+                <option value="04:30 PM - 06:00 PM">04:30 PM - 06:00 PM</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Your Full Name <span class="required">*</span></label>
+            <input type="text" id="tourClientName" name="clientName" class="form-control" placeholder="e.g. Vikram Malhotra" required />
+          </div>
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Email Address <span class="required">*</span></label>
+              <input type="email" id="tourClientEmail" name="clientEmail" class="form-control" placeholder="vikram@example.com" required />
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Phone Number <span class="required">*</span></label>
+              <input type="tel" id="tourClientPhone" name="clientPhone" class="form-control" placeholder="+91 98765 43210" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Notes or Questions for Agent</label>
+            <textarea name="notes" class="form-textarea" rows="2" placeholder="e.g. We would like to inspect the parking slots and society clubhouse..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm Site Tour Booking</button>
         </div>
       </form>
     </div>

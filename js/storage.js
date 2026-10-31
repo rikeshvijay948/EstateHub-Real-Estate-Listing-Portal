@@ -11,7 +11,8 @@ const STORAGE_KEYS = {
   INQUIRIES: "estatehub_inquiries",
   COMPARE: "estatehub_compare",
   REVIEWS: "estatehub_reviews",
-  RECENTLY_VIEWED: "estatehub_recently_viewed"
+  RECENTLY_VIEWED: "estatehub_recently_viewed",
+  TOURS: "estatehub_tours"
 };
 
 const StorageManager = {
@@ -34,6 +35,9 @@ const StorageManager = {
       }
       if (!localStorage.getItem(STORAGE_KEYS.REVIEWS) && typeof INITIAL_REVIEWS !== "undefined") {
         localStorage.setItem(STORAGE_KEYS.REVIEWS, JSON.stringify(INITIAL_REVIEWS));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.TOURS) && typeof INITIAL_TOURS !== "undefined") {
+        localStorage.setItem(STORAGE_KEYS.TOURS, JSON.stringify(INITIAL_TOURS));
       }
     } catch (e) {
       console.error("Error initializing EstateHub Storage:", e);
@@ -527,6 +531,79 @@ const StorageManager = {
   },
 
   /* ==========================================================
+     SITE VISIT TOURS & BOOKINGS
+     ========================================================== */
+
+  /**
+   * Retrieves all scheduled site visit tours.
+   * @returns {Array}
+   */
+  getTours() {
+    this.init();
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.TOURS);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  /**
+   * Adds a new scheduled site visit tour.
+   * @param {Object} tourData
+   * @returns {Object}
+   */
+  addTour(tourData) {
+    const tours = this.getTours();
+    const newTour = {
+      id: "tour-" + Date.now(),
+      propertyId: String(tourData.propertyId || ""),
+      propertyTitle: tourData.propertyTitle || "Scheduled Property Visit",
+      propertyPrice: tourData.propertyPrice || 0,
+      propertyImage: tourData.propertyImage || "",
+      clientName: (tourData.clientName || "").trim(),
+      clientEmail: (tourData.clientEmail || "").trim(),
+      clientPhone: (tourData.clientPhone || "").trim(),
+      tourType: tourData.tourType || "in_person",
+      tourDate: tourData.tourDate || new Date().toISOString().split("T")[0],
+      timeSlot: tourData.timeSlot || "11:00 AM - 12:30 PM",
+      notes: (tourData.notes || "").trim(),
+      status: "confirmed",
+      createdAt: new Date().toISOString()
+    };
+    tours.unshift(newTour);
+    localStorage.setItem(STORAGE_KEYS.TOURS, JSON.stringify(tours));
+    window.dispatchEvent(new CustomEvent("toursUpdated", { detail: { tour: newTour } }));
+    return newTour;
+  },
+
+  /**
+   * Updates status of a scheduled tour.
+   * @param {string} id
+   * @param {string} status 'confirmed' | 'completed' | 'cancelled'
+   */
+  updateTourStatus(id, status) {
+    const tours = this.getTours();
+    const index = tours.findIndex(t => String(t.id) === String(id));
+    if (index > -1) {
+      tours[index].status = status;
+      localStorage.setItem(STORAGE_KEYS.TOURS, JSON.stringify(tours));
+      window.dispatchEvent(new CustomEvent("toursUpdated", { detail: { id, status } }));
+    }
+  },
+
+  /**
+   * Deletes a scheduled tour.
+   * @param {string} id
+   */
+  deleteTour(id) {
+    const tours = this.getTours();
+    const filtered = tours.filter(t => String(t.id) !== String(id));
+    localStorage.setItem(STORAGE_KEYS.TOURS, JSON.stringify(filtered));
+    window.dispatchEvent(new CustomEvent("toursUpdated", { detail: { id } }));
+  },
+
+  /* ==========================================================
      DATA RESET & REFRESH
      ========================================================== */
 
@@ -540,6 +617,9 @@ const StorageManager = {
     localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(INITIAL_INQUIRIES));
     if (typeof INITIAL_REVIEWS !== "undefined") {
       localStorage.setItem(STORAGE_KEYS.REVIEWS, JSON.stringify(INITIAL_REVIEWS));
+    }
+    if (typeof INITIAL_TOURS !== "undefined") {
+      localStorage.setItem(STORAGE_KEYS.TOURS, JSON.stringify(INITIAL_TOURS));
     }
     localStorage.setItem(STORAGE_KEYS.RECENTLY_VIEWED, JSON.stringify([]));
     window.location.reload();

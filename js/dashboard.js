@@ -18,7 +18,13 @@ const DashboardController = {
     this.renderMetrics();
     this.renderPropertiesTable();
     this.renderInquiriesTable();
+    this.renderToursTable();
     this.bindEvents();
+
+    window.addEventListener("toursUpdated", () => {
+      this.renderMetrics();
+      this.renderToursTable();
+    });
   },
 
   /**
@@ -45,17 +51,17 @@ const DashboardController = {
   renderMetrics() {
     const properties = StorageManager.getProperties();
     const inquiries = StorageManager.getInquiries();
-    const favorites = StorageManager.getFavorites();
+    const tours = StorageManager.getTours();
 
     const totalListingsEl = document.getElementById("metricTotalListings");
     const activeListingsEl = document.getElementById("metricActiveListings");
     const totalInquiriesEl = document.getElementById("metricTotalInquiries");
-    const totalFavoritesEl = document.getElementById("metricTotalFavorites");
+    const totalToursEl = document.getElementById("metricTotalTours");
 
     if (totalListingsEl) totalListingsEl.textContent = properties.length;
     if (activeListingsEl) activeListingsEl.textContent = properties.length;
     if (totalInquiriesEl) totalInquiriesEl.textContent = inquiries.length;
-    if (totalFavoritesEl) totalFavoritesEl.textContent = favorites.length;
+    if (totalToursEl) totalToursEl.textContent = tours.length;
   },
 
   /**
@@ -207,6 +213,105 @@ const DashboardController = {
     App.showToast("Inquiry deleted.", "info");
     this.renderMetrics();
     this.renderInquiriesTable();
+  },
+
+  /**
+   * Renders Site Visits & Tours Table.
+   */
+  renderToursTable() {
+    const tbody = document.getElementById("dashboardToursTbody");
+    if (!tbody) return;
+
+    const tours = StorageManager.getTours();
+
+    if (tours.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="padding: 2.5rem 1rem; text-align: center; color: var(--text-muted);">
+            <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">📅</div>
+            <strong>No site visits scheduled yet.</strong>
+            <p style="margin: 0.25rem 0 0; font-size: 0.85rem;">When buyers schedule an in-person or live video tour, they will appear here.</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = tours.map((t) => {
+      const modeBadge = t.tourType === "video_call"
+        ? `<span class="badge badge-rent">📹 Live Video Tour</span>`
+        : `<span class="badge badge-sale">🏢 In-Person Visit</span>`;
+
+      const statusBadge = t.status === "cancelled"
+        ? `<span class="badge" style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;">Cancelled</span>`
+        : `<span class="badge badge-featured">✓ Confirmed</span>`;
+
+      const formattedDate = new Date(t.tourDate).toLocaleDateString("en-IN", {
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+
+      return `
+        <tr>
+          <td>
+            <div style="font-weight: 700; color: var(--primary);">${t.clientName}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+              <a href="tel:${t.clientPhone}" style="color: inherit;">${t.clientPhone}</a>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">${t.clientEmail}</div>
+          </td>
+          <td>
+            <a href="./property-details.html?id=${t.propertyId}" style="font-weight: 700; color: var(--primary);" title="View Property">
+              ${t.propertyTitle}
+            </a>
+            ${t.notes ? `<div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; max-width: 260px;">Note: "${t.notes}"</div>` : ""}
+          </td>
+          <td>${modeBadge}</td>
+          <td>
+            <strong style="display: block; font-size: 0.875rem;">${formattedDate}</strong>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">${t.timeSlot}</span>
+          </td>
+          <td>${statusBadge}</td>
+          <td>
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              ${t.status !== "cancelled" ? `
+                <button class="btn btn-outline btn-xs" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" title="Cancel appointment" onclick="DashboardController.cancelTour('${t.id}')">
+                  Cancel
+                </button>
+              ` : `
+                <button class="btn btn-primary btn-xs" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" title="Reconfirm appointment" onclick="DashboardController.confirmTour('${t.id}')">
+                  Reconfirm
+                </button>
+              `}
+              <button class="btn btn-danger-outline btn-xs btn-icon-only" title="Delete record" onclick="DashboardController.deleteTour('${t.id}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  },
+
+  cancelTour(id) {
+    StorageManager.updateTourStatus(id, "cancelled");
+    App.showToast("Site visit appointment cancelled.", "info");
+    this.renderToursTable();
+  },
+
+  confirmTour(id) {
+    StorageManager.updateTourStatus(id, "confirmed");
+    App.showToast("Site visit reconfirmed with client.", "success");
+    this.renderToursTable();
+  },
+
+  deleteTour(id) {
+    StorageManager.deleteTour(id);
+    App.showToast("Tour appointment deleted.", "info");
+    this.renderMetrics();
+    this.renderToursTable();
   },
 
   /**
