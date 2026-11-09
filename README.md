@@ -25,6 +25,10 @@
 - **📅 Schedule Site Tour Booking**: In-person or live video tour appointment scheduler with date picker, time slots, and dashboard management.
 - **🚆 Neighborhood & Nearby Landmarks**: Proximity explorer with category pills (Transit, Schools, Healthcare, Shopping, Dining), verified distance badges (km), and commute estimates.
 - **💱 Live Multi-Currency Converter**: Convert prices on-the-fly across **INR (₹)**, **USD ($)**, **EUR (€)**, **AED (د.إ)**, and **GBP (£)** without page reloads.
+- **📐 Area Measurement Unit Converter**: Live area measurement conversion across **Square Feet (sq.ft)**, **Square Meters (sq.m)**, and **Square Yards / Gaj (sq.yd)** with automatic localStorage persistence.
+- **📲 Interactive Property Share & QR Code**: 1-click sharing across WhatsApp (with pre-filled property specs), X/Twitter, LinkedIn, Facebook, Email, native Web Share API device fallback, and dynamic QR Code generation for instant mobile viewing.
+- **🖼️ Fullscreen Image Gallery Lightbox**: Immersive full-viewport lightbox viewer with keyboard navigation (Left/Right arrow keys, Escape), photo counters, and thumbnail filmstrip.
+- **🔔 Saved Search Alerts & Manager**: Save complex filter criteria with 1 click, track live matching inventory in real-time, and re-run searches instantly from the Dashboard.
 - **💰 Financial Calculator**: Real-time Home Loan EMI calculator with sliders for principal, interest rate, and tenure.
 - **❤️ Favorites & Wishlist**: Toggle favorites from any property card; saves instantly to `localStorage` with header counter badge synchronization and dedicated wishlist management page.
 - **✍️ Full Property CRUD**: Add, edit, view, and delete property listings with automated form validation, image URL previews, and toast feedback.
@@ -114,7 +118,10 @@ The simulated client-side database manages state under the following keys:
 - `estatehub_reviews`: Verified customer ratings and feedback.
 - `estatehub_recently_viewed`: Browsing history of viewed properties.
 - `estatehub_tours`: Scheduled in-person and video tour bookings.
+- `estatehub_saved_searches`: Saved search criteria and instant alert configurations.
 - `estatehub_currency`: Selected display currency (INR, USD, EUR, AED, GBP).
+- `estatehub_area_unit`: Selected measurement unit (`sqft`, `sqm`, `sqyd`).
+- `estatehub_view_mode`: Preferred catalog layout (`grid` or `list`).
 - `estatehub_theme`: Active visual mode (`light` or `dark`).
 
 ---
