@@ -575,6 +575,89 @@ const PropertiesController = {
 
     this.applyFilters();
     App.showToast("Filters reset to default.", "info");
+  },
+
+  /**
+   * Opens the Save Search Alert modal and generates summary.
+   */
+  openSaveSearchModal() {
+    const f = this.filters;
+    const summaryEl = document.getElementById("saveSearchFilterSummary");
+    const titleInput = document.getElementById("saveSearchTitleInput");
+
+    // Build active filter tags & auto-name
+    const tags = [];
+    const nameParts = [];
+
+    if (f.query && f.query.trim()) {
+      tags.push(`Keyword: "${f.query.trim()}"`);
+      nameParts.push(`"${f.query.trim()}"`);
+    }
+    if (f.city && f.city !== "all") {
+      tags.push(`City: ${f.city}`);
+      nameParts.push(f.city);
+    }
+    if (f.propertyType && f.propertyType !== "all") {
+      const typeLabel = f.propertyType.charAt(0).toUpperCase() + f.propertyType.slice(1);
+      tags.push(`Type: ${typeLabel}`);
+      nameParts.push(typeLabel);
+    }
+    if (f.listingType && f.listingType !== "all") {
+      tags.push(`For: ${f.listingType === "rent" ? "Rent" : "Sale"}`);
+      nameParts.push(f.listingType === "rent" ? "Rentals" : "Buy");
+    }
+    if (f.bedrooms && f.bedrooms !== "all") {
+      tags.push(`BHK: ${f.bedrooms} BHK`);
+      nameParts.push(`${f.bedrooms} BHK`);
+    }
+    if (f.maxPrice) {
+      tags.push(`Max Price: ${App.formatPrice(f.maxPrice)}`);
+    }
+
+    if (tags.length === 0) {
+      tags.push("All Properties (Broad Search)");
+      nameParts.push("All Properties Explorer");
+    }
+
+    if (summaryEl) {
+      summaryEl.innerHTML = tags.map(t => `<span class="badge" style="background:var(--bg-surface);border:1px solid var(--border);color:var(--text-main);font-size:0.75rem;padding:0.3rem 0.6rem;">${t}</span>`).join("");
+    }
+
+    if (titleInput) {
+      titleInput.value = nameParts.join(" • ") || "My Property Search";
+    }
+
+    App.openModal("saveSearchModal");
+  },
+
+  /**
+   * Handles Save Search form submission.
+   */
+  handleSaveSearchSubmit(e) {
+    e.preventDefault();
+    const titleInput = document.getElementById("saveSearchTitleInput");
+    const freqSelect = document.getElementById("saveSearchFrequency");
+
+    const f = this.filters;
+    const queryParams = new URLSearchParams();
+    if (f.query) queryParams.set("query", f.query);
+    if (f.city && f.city !== "all") queryParams.set("city", f.city);
+    if (f.propertyType && f.propertyType !== "all") queryParams.set("propertyType", f.propertyType);
+    if (f.listingType && f.listingType !== "all") queryParams.set("type", f.listingType);
+    if (f.bedrooms && f.bedrooms !== "all") queryParams.set("bedrooms", f.bedrooms);
+    if (f.minPrice) queryParams.set("minPrice", f.minPrice);
+    if (f.maxPrice) queryParams.set("maxPrice", f.maxPrice);
+
+    const searchData = {
+      title: titleInput ? titleInput.value.trim() : "Custom Search Alert",
+      filters: { ...this.filters },
+      queryString: queryParams.toString() ? `?${queryParams.toString()}` : "",
+      frequency: freqSelect ? freqSelect.value : "instant"
+    };
+
+    StorageManager.addSavedSearch(searchData);
+    App.closeModal("saveSearchModal");
+    App.showToast("Search alert saved! Manage it anytime in your Dashboard.", "success", 4000);
   }
 };
 

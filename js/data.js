@@ -942,4 +942,34 @@ const INITIAL_TOURS = [
   }
 ];
 
+const INITIAL_SAVED_SEARCHES = [
+  {
+    id: "search-1",
+    title: "Sea-Facing Luxury Apartments in Mumbai",
+    filters: {
+      city: "Mumbai",
+      propertyType: "apartment",
+      bedrooms: "4",
+      listingType: "sale"
+    },
+    queryString: "?city=Mumbai&propertyType=apartment&bedrooms=4&type=sale",
+    frequency: "instant",
+    createdAt: "2026-10-28T09:15:00Z"
+  },
+  {
+    id: "search-2",
+    title: "Villas & Penthouses in Bengaluru",
+    filters: {
+      city: "Bengaluru",
+      propertyType: "villa",
+      bedrooms: "all",
+      listingType: "sale"
+    },
+    queryString: "?city=Bengaluru&propertyType=villa&type=sale",
+    frequency: "daily",
+    createdAt: "2026-11-01T14:20:00Z"
+  }
+];
+
+
 

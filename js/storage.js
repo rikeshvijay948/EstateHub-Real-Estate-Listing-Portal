@@ -13,7 +13,8 @@ const STORAGE_KEYS = {
   REVIEWS: "estatehub_reviews",
   RECENTLY_VIEWED: "estatehub_recently_viewed",
   TOURS: "estatehub_tours",
-  AREA_UNIT: "estatehub_area_unit"
+  AREA_UNIT: "estatehub_area_unit",
+  SAVED_SEARCHES: "estatehub_saved_searches"
 };
 
 const StorageManager = {
@@ -39,6 +40,9 @@ const StorageManager = {
       }
       if (!localStorage.getItem(STORAGE_KEYS.TOURS) && typeof INITIAL_TOURS !== "undefined") {
         localStorage.setItem(STORAGE_KEYS.TOURS, JSON.stringify(INITIAL_TOURS));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.SAVED_SEARCHES) && typeof INITIAL_SAVED_SEARCHES !== "undefined") {
+        localStorage.setItem(STORAGE_KEYS.SAVED_SEARCHES, JSON.stringify(INITIAL_SAVED_SEARCHES));
       }
     } catch (e) {
       console.error("Error initializing EstateHub Storage:", e);
@@ -616,6 +620,42 @@ const StorageManager = {
   },
 
   /* ==========================================================
+     SAVED SEARCHES CRUD
+     ========================================================== */
+  getSavedSearches() {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.SAVED_SEARCHES);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      console.error("Error reading saved searches:", e);
+      return [];
+    }
+  },
+
+  addSavedSearch(searchData) {
+    const searches = this.getSavedSearches();
+    const newSearch = {
+      id: "search-" + Date.now(),
+      title: searchData.title || "Custom Search Alert",
+      filters: searchData.filters || {},
+      queryString: searchData.queryString || "",
+      frequency: searchData.frequency || "instant",
+      createdAt: new Date().toISOString()
+    };
+    searches.unshift(newSearch);
+    localStorage.setItem(STORAGE_KEYS.SAVED_SEARCHES, JSON.stringify(searches));
+    window.dispatchEvent(new CustomEvent("savedSearchesUpdated", { detail: newSearch }));
+    return newSearch;
+  },
+
+  deleteSavedSearch(id) {
+    const searches = this.getSavedSearches();
+    const filtered = searches.filter(s => String(s.id) !== String(id));
+    localStorage.setItem(STORAGE_KEYS.SAVED_SEARCHES, JSON.stringify(filtered));
+    window.dispatchEvent(new CustomEvent("savedSearchesUpdated", { detail: { id } }));
+  },
+
+  /* ==========================================================
      DATA RESET & REFRESH
      ========================================================== */
 
@@ -632,6 +672,9 @@ const StorageManager = {
     }
     if (typeof INITIAL_TOURS !== "undefined") {
       localStorage.setItem(STORAGE_KEYS.TOURS, JSON.stringify(INITIAL_TOURS));
+    }
+    if (typeof INITIAL_SAVED_SEARCHES !== "undefined") {
+      localStorage.setItem(STORAGE_KEYS.SAVED_SEARCHES, JSON.stringify(INITIAL_SAVED_SEARCHES));
     }
     localStorage.setItem(STORAGE_KEYS.RECENTLY_VIEWED, JSON.stringify([]));
     window.location.reload();

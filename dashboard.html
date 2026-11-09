@@ -100,6 +100,14 @@
             Site Visits & Tours
           </button>
 
+          <button type="button" class="dash-nav-link dash-tab-btn" data-tab="searches">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Saved Searches
+            <span id="savedSearchesCountBadge" class="badge badge-sale" style="margin-left: auto; font-size: 0.7rem; padding: 0.2rem 0.5rem; display: none;">0</span>
+          </button>
+
           <a href="./add-property.html" class="dash-nav-link" style="color: var(--brand);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             + Add New Listing
@@ -254,6 +262,36 @@
                   </tr>
                 </thead>
                 <tbody id="dashboardToursTbody">
+                  <!-- Populated dynamically by js/dashboard.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: Saved Search Alerts Table -->
+        <div id="tab-searches" class="dash-tab-pane" style="display: none;">
+          <div class="table-card">
+            <div class="table-header">
+              <div>
+                <h3 class="table-title">Saved Search Alerts</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Quickly re-run your saved property criteria and manage notification alerts</p>
+              </div>
+              <a href="./properties.html" class="btn btn-primary btn-sm">+ New Search Alert</a>
+            </div>
+
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Alert Name &amp; Criteria</th>
+                    <th>Frequency</th>
+                    <th>Saved On</th>
+                    <th>Live Matches</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardSearchesTbody">
                   <!-- Populated dynamically by js/dashboard.js -->
                 </tbody>
               </table>

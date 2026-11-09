@@ -19,11 +19,16 @@ const DashboardController = {
     this.renderPropertiesTable();
     this.renderInquiriesTable();
     this.renderToursTable();
+    this.renderSavedSearchesTable();
     this.bindEvents();
 
     window.addEventListener("toursUpdated", () => {
       this.renderMetrics();
       this.renderToursTable();
+    });
+
+    window.addEventListener("savedSearchesUpdated", () => {
+      this.renderSavedSearchesTable();
     });
   },
 
@@ -312,6 +317,106 @@ const DashboardController = {
     App.showToast("Tour appointment deleted.", "info");
     this.renderMetrics();
     this.renderToursTable();
+  },
+
+  /**
+   * Renders Saved Search Alerts Table.
+   */
+  renderSavedSearchesTable() {
+    const tbody = document.getElementById("dashboardSearchesTbody");
+    const countBadge = document.getElementById("savedSearchesCountBadge");
+    const searches = StorageManager.getSavedSearches();
+    const allProps = StorageManager.getProperties();
+
+    if (countBadge) {
+      if (searches.length > 0) {
+        countBadge.style.display = "inline-block";
+        countBadge.textContent = searches.length;
+      } else {
+        countBadge.style.display = "none";
+      }
+    }
+
+    if (!tbody) return;
+
+    if (searches.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+            No saved search alerts yet. You can save customized filter criteria from our 
+            <a href="./properties.html" class="btn btn-outline btn-xs" style="margin-left: 0.5rem;">Explore Properties</a> page.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = searches.map(s => {
+      const f = s.filters || {};
+      const chips = [];
+      if (f.city && f.city !== "all") chips.push(`City: ${f.city}`);
+      if (f.propertyType && f.propertyType !== "all") chips.push(`Type: ${f.propertyType}`);
+      if (f.listingType && f.listingType !== "all") chips.push(`For: ${f.listingType === "rent" ? "Rent" : "Sale"}`);
+      if (f.bedrooms && f.bedrooms !== "all") chips.push(`BHK: ${f.bedrooms} BHK`);
+      if (f.maxPrice) chips.push(`Max: ${App.formatPrice(f.maxPrice)}`);
+
+      // Count matching properties in current dataset
+      const matchingCount = allProps.filter(p => {
+        if (f.city && f.city !== "all" && p.city.toLowerCase() !== f.city.toLowerCase()) return false;
+        if (f.propertyType && f.propertyType !== "all" && p.propertyType.toLowerCase() !== f.propertyType.toLowerCase()) return false;
+        if (f.listingType && f.listingType !== "all" && p.listingType !== f.listingType) return false;
+        if (f.bedrooms && f.bedrooms !== "all" && String(p.bedrooms) !== String(f.bedrooms)) return false;
+        if (f.maxPrice && p.price > f.maxPrice) return false;
+        return true;
+      }).length;
+
+      const dateStr = s.createdAt 
+        ? new Date(s.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+        : "Recent";
+
+      return `
+        <tr>
+          <td>
+            <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.35rem; font-size: 0.95rem;">
+              ${s.title}
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.3rem;">
+              ${chips.length > 0 ? chips.map(c => `<span class="badge" style="background:var(--bg-card);border:1px solid var(--border);font-size:0.75rem;padding:0.2rem 0.5rem;">${c}</span>`).join("") : '<span class="badge badge-outline" style="font-size:0.75rem;">All Criteria</span>'}
+            </div>
+          </td>
+          <td>
+            <span class="badge" style="background: rgba(59,130,246,0.1); color: var(--brand); font-size: 0.75rem; font-weight: 600; text-transform: capitalize;">
+              ${s.frequency || "Instant"}
+            </span>
+          </td>
+          <td>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">${dateStr}</span>
+          </td>
+          <td>
+            <span class="badge ${matchingCount > 0 ? 'badge-rent' : 'badge-outline'}" style="font-weight: 700; font-size: 0.8rem;">
+              ${matchingCount} ${matchingCount === 1 ? 'property' : 'properties'}
+            </span>
+          </td>
+          <td>
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              <a href="./properties.html${s.queryString || ''}" class="btn btn-primary btn-xs" style="padding: 0.3rem 0.65rem; font-size: 0.78rem;" title="Re-run search filters">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: -1px; margin-right: 2px;"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                Re-run
+              </a>
+              <button class="btn btn-danger-outline btn-xs btn-icon-only" title="Delete alert" onclick="DashboardController.deleteSavedSearch('${s.id}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  },
+
+  deleteSavedSearch(id) {
+    StorageManager.deleteSavedSearch(id);
+    App.showToast("Saved search alert deleted.", "info");
+    this.renderSavedSearchesTable();
   },
 
   /**
