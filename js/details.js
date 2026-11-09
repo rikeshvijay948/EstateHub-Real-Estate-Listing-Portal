@@ -553,6 +553,115 @@ const PropertyDetailsController = {
   },
 
   /**
+   * Opens the interactive share modal with QR code and prefilled social links.
+   */
+  openShareModal() {
+    if (!this.property) return;
+    const p = this.property;
+    const shareUrl = window.location.href;
+    const shareText = `Explore ${p.title} (${p.city}) on EstateHub:`;
+
+    const titleEl = document.getElementById("shareModalPropTitle");
+    const locEl = document.getElementById("shareModalPropLocation");
+    const priceEl = document.getElementById("shareModalPropPrice");
+    const thumbEl = document.getElementById("shareModalPropThumb");
+    const urlInput = document.getElementById("shareModalUrlInput");
+    const qrImg = document.getElementById("shareModalQrImg");
+
+    if (titleEl) titleEl.textContent = p.title;
+    if (locEl) locEl.textContent = `${p.address}, ${p.city}`;
+    if (priceEl) priceEl.innerHTML = App.formatPrice(p.price, p.listingType);
+    if (thumbEl) thumbEl.src = (p.images && p.images[0]) || App.getFallbackImage();
+    if (urlInput) urlInput.value = shareUrl;
+
+    if (qrImg) {
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(shareUrl)}`;
+    }
+
+    const waBtn = document.getElementById("shareWhatsAppBtn");
+    const twBtn = document.getElementById("shareTwitterBtn");
+    const liBtn = document.getElementById("shareLinkedInBtn");
+    const fbBtn = document.getElementById("shareFacebookBtn");
+    const emBtn = document.getElementById("shareEmailBtn");
+    const nativeBtn = document.getElementById("shareNativeBtn");
+
+    if (waBtn) waBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + " " + shareUrl)}`;
+    if (twBtn) twBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    if (liBtn) liBtn.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+    if (fbBtn) fbBtn.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    if (emBtn) emBtn.href = `mailto:?subject=${encodeURIComponent("Property Listing: " + p.title)}&body=${encodeURIComponent(shareText + "\n\n" + shareUrl)}`;
+
+    if (nativeBtn) {
+      if (navigator.share) {
+        nativeBtn.style.display = "inline-flex";
+        nativeBtn.onclick = () => {
+          navigator.share({
+            title: p.title,
+            text: shareText,
+            url: shareUrl,
+          }).catch(() => {});
+        };
+      } else {
+        nativeBtn.style.display = "none";
+      }
+    }
+
+    App.openModal("shareModal");
+  },
+
+  /**
+   * Copies current listing URL to clipboard with UI feedback.
+   */
+  copyShareUrl() {
+    const urlInput = document.getElementById("shareModalUrlInput");
+    const copyBtn = document.getElementById("copyShareUrlBtn");
+    if (!urlInput) return;
+
+    const onSuccess = () => {
+      if (copyBtn) {
+        const origContent = copyBtn.innerHTML;
+        copyBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Copied!
+        `;
+        setTimeout(() => {
+          copyBtn.innerHTML = origContent;
+        }, 2200);
+      }
+      App.showToast("Listing URL copied to clipboard!", "success");
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(urlInput.value).then(onSuccess).catch(() => {
+        urlInput.select();
+        document.execCommand("copy");
+        onSuccess();
+      });
+    } else {
+      urlInput.select();
+      document.execCommand("copy");
+      onSuccess();
+    }
+  },
+
+  /**
+   * Downloads the generated listing QR Code image.
+   */
+  downloadQrCode() {
+    const qrImg = document.getElementById("shareModalQrImg");
+    if (!qrImg || !qrImg.src) return;
+    const a = document.createElement("a");
+    a.href = qrImg.src;
+    a.download = `EstateHub-QR-${this.property ? this.property.id : "listing"}.png`;
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  },
+
+  /**
    * Initializes and renders customer reviews for this property.
    */
   initReviews() {

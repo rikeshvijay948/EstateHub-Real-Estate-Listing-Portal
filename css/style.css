@@ -2834,3 +2834,132 @@ ul, ol {
   }
 }
 
+/* --- Property Share Modal & QR Code --- */
+.share-card-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem;
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.share-card-preview img {
+  width: 76px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.share-preview-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.share-social-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.65rem;
+}
+
+.share-social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
+}
+
+.share-social-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.share-btn-whatsapp {
+  background-color: #25d366;
+  color: #ffffff !important;
+}
+
+.share-btn-twitter {
+  background-color: #0f1419;
+  color: #ffffff !important;
+}
+
+.share-btn-linkedin {
+  background-color: #0a66c2;
+  color: #ffffff !important;
+}
+
+.share-btn-facebook {
+  background-color: #1877f2;
+  color: #ffffff !important;
+}
+
+.share-btn-email {
+  background-color: #ea4335;
+  color: #ffffff !important;
+}
+
+.share-btn-native {
+  background-color: var(--primary);
+  color: #ffffff !important;
+}
+
+.share-qr-container {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: var(--bg-main);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.share-qr-img {
+  width: 105px;
+  height: 105px;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 6px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.share-qr-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.share-link-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.share-link-input {
+  flex: 1;
+  height: 42px;
+  padding: 0 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.share-link-input:focus {
+  border-color: var(--brand);
+}
+
+
