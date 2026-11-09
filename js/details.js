@@ -125,7 +125,7 @@ const PropertyDetailsController = {
         </div>
         <div class="spec-box-card">
           <span class="spec-label">Super Area</span>
-          <span class="spec-value">${p.area} sq.ft</span>
+          <span class="spec-value">${App.formatArea(p.area)}</span>
         </div>
         <div class="spec-box-card">
           <span class="spec-label">Year Built</span>

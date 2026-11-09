@@ -11,6 +11,7 @@ const App = {
   init() {
     this.setupTheme();
     this.setupCurrencySelector();
+    this.setupAreaUnitSelector();
     this.setupNavbar();
     this.updateNavBadges();
     this.setupToasts();
@@ -28,8 +29,8 @@ const App = {
       this.setupNavbar();
     });
 
-    // Listen to currency changes to refresh prices across views
-    window.addEventListener("currencyChanged", () => {
+    // Refresh dynamic views when currency or area unit changes
+    const handleUnitOrCurrencyChange = () => {
       if (typeof PropertiesController !== "undefined" && typeof PropertiesController.render === "function") {
         PropertiesController.render();
       }
@@ -53,7 +54,16 @@ const App = {
       if (detailRecent && typeof PropertyDetailsController !== "undefined" && PropertyDetailsController.property) {
         this.renderRecentlyViewedGrid("recentlyViewedGrid", "recentlyViewedSection", PropertyDetailsController.property.id);
       }
-    });
+      if (typeof this.renderComparisonModal === "function") {
+        const compModal = document.getElementById("compareModal");
+        if (compModal && compModal.classList.contains("active")) {
+          this.renderComparisonModal();
+        }
+      }
+    };
+
+    window.addEventListener("currencyChanged", handleUnitOrCurrencyChange);
+    window.addEventListener("areaUnitChanged", handleUnitOrCurrencyChange);
   },
 
   /**
@@ -173,6 +183,81 @@ const App = {
         }
       }
     }
+  },
+
+  AREA_UNITS: {
+    sqft: { label: "sq.ft", factor: 1.0, title: "Square Feet" },
+    sqm: { label: "sq.m", factor: 0.092903, title: "Square Meters" },
+    sqyd: { label: "sq.yd", factor: 0.111111, title: "Square Yards (Gaj)" }
+  },
+
+  getAreaUnit() {
+    return localStorage.getItem("estatehub_area_unit") || "sqft";
+  },
+
+  setAreaUnit(unit) {
+    if (!this.AREA_UNITS[unit]) unit = "sqft";
+    localStorage.setItem("estatehub_area_unit", unit);
+    this.showToast(`Measurement unit changed to ${this.AREA_UNITS[unit].label}`, "info", 2000);
+    window.dispatchEvent(new CustomEvent("areaUnitChanged", { detail: { unit } }));
+  },
+
+  setupAreaUnitSelector() {
+    const navActions = document.querySelector(".nav-actions");
+    if (navActions && !document.getElementById("areaUnitSelector")) {
+      const select = document.createElement("select");
+      select.id = "areaUnitSelector";
+      select.className = "currency-select area-unit-select";
+      select.setAttribute("aria-label", "Select Measurement Unit");
+      select.setAttribute("title", "Toggle Area Units (sq.ft / sq.m / sq.yd)");
+
+      const current = this.getAreaUnit();
+
+      Object.keys(this.AREA_UNITS).forEach(key => {
+        const opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = this.AREA_UNITS[key].label;
+        if (key === current) opt.selected = true;
+        select.appendChild(opt);
+      });
+
+      select.addEventListener("change", (e) => {
+        this.setAreaUnit(e.target.value);
+      });
+
+      const currSel = document.getElementById("currencySelector");
+      if (currSel && currSel.nextSibling) {
+        navActions.insertBefore(select, currSel.nextSibling);
+      } else {
+        const themeBtn = document.getElementById("themeToggleBtn");
+        if (themeBtn) {
+          navActions.insertBefore(select, themeBtn);
+        } else {
+          navActions.appendChild(select);
+        }
+      }
+    }
+  },
+
+  /**
+   * Formats property area dynamically using user-selected unit (sq.ft, sq.m, sq.yd).
+   * @param {number} sqft
+   * @returns {string}
+   */
+  formatArea(sqft) {
+    if (isNaN(sqft) || sqft === null || sqft === undefined) return "N/A";
+    const num = Number(sqft);
+    const unitKey = this.getAreaUnit();
+    const unit = this.AREA_UNITS[unitKey] || this.AREA_UNITS.sqft;
+
+    if (unitKey === "sqm") {
+      const val = Math.round(num * unit.factor);
+      return `${val.toLocaleString()} sq.m`;
+    } else if (unitKey === "sqyd") {
+      const val = Math.round(num * unit.factor);
+      return `${val.toLocaleString()} sq.yd`;
+    }
+    return `${num.toLocaleString()} sq.ft`;
   },
 
   /**
@@ -324,7 +409,7 @@ const App = {
               </div>
             ` : ""}
 
-            <div class="spec-item" title="${prop.area} Square Feet">
+            <div class="spec-item" title="${this.formatArea(prop.area)}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="9" y1="3" x2="9" y2="21"></line>
@@ -332,7 +417,7 @@ const App = {
                 <line x1="3" y1="9" x2="21" y2="9"></line>
                 <line x1="3" y1="15" x2="21" y2="15"></line>
               </svg>
-              <span>${prop.area} sq.ft</span>
+              <span>${this.formatArea(prop.area)}</span>
             </div>
           </div>
         </div>
@@ -527,7 +612,7 @@ const App = {
       { label: "Location", render: p => `${p.city || ''}, ${p.state || ''}` },
       { label: "Bedrooms", render: p => `${p.bedrooms || 0} BHK` },
       { label: "Bathrooms", render: p => `${p.bathrooms || 0} Baths` },
-      { label: "Area", render: p => `${p.area} sq.ft (${Math.round(p.price / (p.area || 1))}/sq.ft)` },
+      { label: "Super Area", render: p => `${this.formatArea(p.area)}` },
       { label: "Furnishing", render: p => p.furnishing || "Unfurnished" },
       { label: "Amenities", render: p => (p.amenities && p.amenities.length > 0) ? `<div style="display:flex;flex-wrap:wrap;gap:0.25rem;">${p.amenities.map(a => `<span class="badge" style="font-size:0.7rem;background:var(--bg-card);border:1px solid var(--border);">${a}</span>`).join('')}</div>` : "N/A" }
     ];

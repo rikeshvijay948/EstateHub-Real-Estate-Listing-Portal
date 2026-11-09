@@ -12,7 +12,8 @@ const STORAGE_KEYS = {
   COMPARE: "estatehub_compare",
   REVIEWS: "estatehub_reviews",
   RECENTLY_VIEWED: "estatehub_recently_viewed",
-  TOURS: "estatehub_tours"
+  TOURS: "estatehub_tours",
+  AREA_UNIT: "estatehub_area_unit"
 };
 
 const StorageManager = {
@@ -601,6 +602,17 @@ const StorageManager = {
     const filtered = tours.filter(t => String(t.id) !== String(id));
     localStorage.setItem(STORAGE_KEYS.TOURS, JSON.stringify(filtered));
     window.dispatchEvent(new CustomEvent("toursUpdated", { detail: { id } }));
+  },
+
+  /* ==========================================================
+     MEASUREMENT UNIT SETTINGS
+     ========================================================== */
+  getAreaUnit() {
+    return localStorage.getItem(STORAGE_KEYS.AREA_UNIT) || "sqft";
+  },
+
+  setAreaUnit(unit) {
+    localStorage.setItem(STORAGE_KEYS.AREA_UNIT, unit);
   },
 
   /* ==========================================================

@@ -157,6 +157,10 @@
   border-color: var(--border);
 }
 
+.area-unit-select {
+  min-width: 66px;
+}
+
 /* Compare Button on Cards */
 .compare-card-btn {
   position: absolute;
