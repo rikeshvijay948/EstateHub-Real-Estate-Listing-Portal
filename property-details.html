@@ -143,12 +143,21 @@
       <!-- Image Gallery -->
       <section class="gallery-section">
         <div class="gallery-main-wrap">
-          <img id="galleryMainImg" src="" alt="Property Photo" class="gallery-main-img" />
+          <img id="galleryMainImg" src="" alt="Property Photo" class="gallery-main-img" onclick="PropertyDetailsController.openLightbox()" title="Click to view fullscreen gallery" style="cursor: zoom-in;" />
           <button type="button" id="galleryPrev" class="gallery-btn-prev" aria-label="Previous image">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
           <button type="button" id="galleryNext" class="gallery-btn-next" aria-label="Next image">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+          <button type="button" id="galleryFullscreenBtn" class="gallery-btn-fullscreen" onclick="PropertyDetailsController.openLightbox()" aria-label="View Fullscreen" title="View Fullscreen Gallery">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <polyline points="9 21 3 21 3 15"></polyline>
+              <line x1="21" y1="3" x2="14" y2="10"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
+            </svg>
+            <span>View Fullscreen</span>
           </button>
           <div id="galleryCounter" class="gallery-counter">1 / 1</div>
         </div>
@@ -719,6 +728,37 @@
       </div>
     </div>
   </footer>
+
+  <!-- Fullscreen Image Lightbox Viewer -->
+  <div id="galleryLightbox" class="gallery-lightbox" role="dialog" aria-modal="true" aria-label="Property Image Lightbox" onclick="if (event.target === this) PropertyDetailsController.closeLightbox();">
+    <div class="lightbox-header">
+      <div class="lightbox-title-wrap">
+        <h4 id="lightboxTitle" class="lightbox-title">Property Gallery</h4>
+        <span id="lightboxCounter" class="lightbox-counter-badge">1 / 1</span>
+      </div>
+      <button type="button" id="lightboxCloseBtn" class="lightbox-close-btn" onclick="PropertyDetailsController.closeLightbox()" aria-label="Close Lightbox">&times;</button>
+    </div>
+
+    <div class="lightbox-stage" onclick="if (event.target === this) PropertyDetailsController.closeLightbox();">
+      <button type="button" id="lightboxPrev" class="lightbox-nav-btn lightbox-prev" onclick="PropertyDetailsController.lightboxPrev()" aria-label="Previous Image">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+
+      <div class="lightbox-img-wrap" onclick="event.stopPropagation()">
+        <img id="lightboxMainImg" src="" alt="Fullscreen Property Photo" class="lightbox-main-img" />
+      </div>
+
+      <button type="button" id="lightboxNext" class="lightbox-nav-btn lightbox-next" onclick="PropertyDetailsController.lightboxNext()" aria-label="Next Image">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+
+    <div class="lightbox-footer">
+      <div id="lightboxThumbs" class="lightbox-thumbs-strip">
+        <!-- Rendered by js/details.js -->
+      </div>
+    </div>
+  </div>
 
   <!-- Scripts -->
   <script src="./js/data.js"></script>

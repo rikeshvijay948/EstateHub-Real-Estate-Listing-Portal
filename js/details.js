@@ -197,46 +197,27 @@ const PropertyDetailsController = {
     if (agentCallBtn) agentCallBtn.href = `tel:${(agent.phone || "").replace(/\s+/g, "")}`;
   },
 
+  isLightboxOpen: false,
+
+  /**
+   * Returns current property images or fallback.
+   */
+  getImages() {
+    return (this.property && this.property.images && this.property.images.length > 0)
+      ? this.property.images
+      : [App.getFallbackImage()];
+  },
+
   /**
    * Initializes interactive image gallery.
    */
   initGallery() {
-    const images = (this.property.images && this.property.images.length > 0) 
-      ? this.property.images 
-      : [App.getFallbackImage()];
-
-    const mainImg = document.getElementById("galleryMainImg");
+    const images = this.getImages();
     const thumbsContainer = document.getElementById("galleryThumbs");
-    const counter = document.getElementById("galleryCounter");
     const prevBtn = document.getElementById("galleryPrev");
     const nextBtn = document.getElementById("galleryNext");
 
-    const updateImage = (index) => {
-      if (index < 0) index = images.length - 1;
-      if (index >= images.length) index = 0;
-      this.currentImageIndex = index;
-
-      if (mainImg) {
-        mainImg.style.opacity = "0.7";
-        setTimeout(() => {
-          mainImg.src = images[this.currentImageIndex];
-          mainImg.style.opacity = "1";
-        }, 150);
-      }
-
-      if (counter) {
-        counter.textContent = `${this.currentImageIndex + 1} / ${images.length}`;
-      }
-
-      // Update active thumbnail
-      if (thumbsContainer) {
-        thumbsContainer.querySelectorAll(".gallery-thumb").forEach((thumb, i) => {
-          thumb.classList.toggle("active", i === this.currentImageIndex);
-        });
-      }
-    };
-
-    // Render Thumbnails
+    // Render Main Thumbnails
     if (thumbsContainer) {
       thumbsContainer.innerHTML = images.map((imgUrl, i) => `
         <div class="gallery-thumb ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="PropertyDetailsController.setGalleryIndex(${i})">
@@ -245,34 +226,159 @@ const PropertyDetailsController = {
       `).join("");
     }
 
-    if (prevBtn) prevBtn.onclick = () => updateImage(this.currentImageIndex - 1);
-    if (nextBtn) nextBtn.onclick = () => updateImage(this.currentImageIndex + 1);
+    if (prevBtn) prevBtn.onclick = (e) => { e.stopPropagation(); this.galleryPrev(); };
+    if (nextBtn) nextBtn.onclick = (e) => { e.stopPropagation(); this.galleryNext(); };
 
     // Initial state
-    updateImage(0);
+    this.updateGalleryUI();
 
-    // Keyboard support
+    // Keyboard support (Escape, ArrowLeft, ArrowRight)
     document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft") updateImage(this.currentImageIndex - 1);
-      if (e.key === "ArrowRight") updateImage(this.currentImageIndex + 1);
+      if (this.isLightboxOpen) {
+        if (e.key === "Escape") this.closeLightbox();
+        if (e.key === "ArrowLeft") this.lightboxPrev();
+        if (e.key === "ArrowRight") this.lightboxNext();
+      } else {
+        if (e.key === "ArrowLeft") this.galleryPrev();
+        if (e.key === "ArrowRight") this.galleryNext();
+      }
     });
   },
 
-  setGalleryIndex(index) {
-    const images = this.property.images || [];
+  /**
+   * Updates main page gallery image, counter, and active thumbnail.
+   */
+  updateGalleryUI() {
+    const images = this.getImages();
     const mainImg = document.getElementById("galleryMainImg");
     const counter = document.getElementById("galleryCounter");
     const thumbsContainer = document.getElementById("galleryThumbs");
 
-    this.currentImageIndex = index;
-    if (mainImg) mainImg.src = images[index] || App.getFallbackImage();
-    if (counter) counter.textContent = `${index + 1} / ${images.length}`;
+    if (mainImg) {
+      mainImg.style.opacity = "0.7";
+      setTimeout(() => {
+        mainImg.src = images[this.currentImageIndex] || App.getFallbackImage();
+        mainImg.style.opacity = "1";
+      }, 100);
+    }
+
+    if (counter) {
+      counter.textContent = `${this.currentImageIndex + 1} / ${images.length}`;
+    }
 
     if (thumbsContainer) {
       thumbsContainer.querySelectorAll(".gallery-thumb").forEach((thumb, i) => {
-        thumb.classList.toggle("active", i === index);
+        thumb.classList.toggle("active", i === this.currentImageIndex);
       });
     }
+  },
+
+  /**
+   * Updates lightbox image, counter, and active thumbnail strip.
+   */
+  updateLightboxUI() {
+    const images = this.getImages();
+    const lbImg = document.getElementById("lightboxMainImg");
+    const lbCounter = document.getElementById("lightboxCounter");
+    const lbThumbs = document.getElementById("lightboxThumbs");
+
+    if (lbImg) {
+      lbImg.style.opacity = "0.7";
+      setTimeout(() => {
+        lbImg.src = images[this.currentImageIndex] || App.getFallbackImage();
+        lbImg.style.opacity = "1";
+      }, 100);
+    }
+
+    if (lbCounter) {
+      lbCounter.textContent = `${this.currentImageIndex + 1} / ${images.length}`;
+    }
+
+    if (lbThumbs) {
+      lbThumbs.querySelectorAll(".lightbox-thumb").forEach((thumb, i) => {
+        const isActive = i === this.currentImageIndex;
+        thumb.classList.toggle("active", isActive);
+        if (isActive) {
+          thumb.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        }
+      });
+    }
+  },
+
+  /**
+   * Renders lightbox thumbnail strip.
+   */
+  renderLightboxThumbs() {
+    const strip = document.getElementById("lightboxThumbs");
+    if (!strip) return;
+    const images = this.getImages();
+    strip.innerHTML = images.map((imgUrl, i) => `
+      <div class="lightbox-thumb ${i === this.currentImageIndex ? 'active' : ''}" data-index="${i}" onclick="PropertyDetailsController.setGalleryIndex(${i})">
+        <img src="${imgUrl}" alt="Photo ${i + 1}" onerror="this.src='${App.getFallbackImage()}';" />
+      </div>
+    `).join("");
+  },
+
+  setGalleryIndex(index) {
+    const images = this.getImages();
+    if (index < 0) index = images.length - 1;
+    if (index >= images.length) index = 0;
+    this.currentImageIndex = index;
+
+    this.updateGalleryUI();
+    if (this.isLightboxOpen) {
+      this.updateLightboxUI();
+    }
+  },
+
+  galleryPrev() {
+    const images = this.getImages();
+    this.setGalleryIndex((this.currentImageIndex - 1 + images.length) % images.length);
+  },
+
+  galleryNext() {
+    const images = this.getImages();
+    this.setGalleryIndex((this.currentImageIndex + 1) % images.length);
+  },
+
+  /**
+   * Opens fullscreen Lightbox view.
+   */
+  openLightbox(index) {
+    if (index !== undefined) {
+      this.currentImageIndex = index;
+    }
+    this.isLightboxOpen = true;
+
+    const titleEl = document.getElementById("lightboxTitle");
+    if (titleEl && this.property) {
+      titleEl.textContent = this.property.title;
+    }
+
+    this.renderLightboxThumbs();
+    this.updateLightboxUI();
+
+    const lb = document.getElementById("galleryLightbox");
+    if (lb) lb.classList.add("active");
+    document.body.classList.add("no-scroll");
+  },
+
+  /**
+   * Closes fullscreen Lightbox view.
+   */
+  closeLightbox() {
+    this.isLightboxOpen = false;
+    const lb = document.getElementById("galleryLightbox");
+    if (lb) lb.classList.remove("active");
+    document.body.classList.remove("no-scroll");
+  },
+
+  lightboxPrev() {
+    this.galleryPrev();
+  },
+
+  lightboxNext() {
+    this.galleryNext();
   },
 
   /**
