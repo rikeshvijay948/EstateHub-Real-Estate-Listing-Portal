@@ -26,6 +26,11 @@
 - **🚆 Neighborhood & Nearby Landmarks**: Proximity explorer with category pills (Transit, Schools, Healthcare, Shopping, Dining), verified distance badges (km), and commute estimates.
 - **💱 Live Multi-Currency Converter**: Convert prices on-the-fly across **INR (₹)**, **USD ($)**, **EUR (€)**, **AED (د.إ)**, and **GBP (£)** without page reloads.
 - **📐 Area Measurement Unit Converter**: Live area measurement conversion across **Square Feet (sq.ft)**, **Square Meters (sq.m)**, and **Square Yards / Gaj (sq.yd)** with automatic localStorage persistence.
+- **🏛️ Interactive 360° Virtual Room Tour & Floor Plan Hotspot Explorer**: Switch seamlessly between rooms (Living & Dining Hall, Master Suite, Gourmet Kitchen, Sky Deck, Executive Study). Features interactive pulsating architectural hotspots revealing materials, soundproof glazing, and climate specs, alongside dynamic dimensions and unit conversion.
+- **📉 Price Drop Alert Subscription & Notification Manager**: Set customizable price reduction triggers (Any cut, 5% drop, 10% discount, or custom target price) with instant prefilled contact details. Managed via a dedicated dashboard tab with live price cut detection.
+- **📊 Comprehensive Mortgage & Purchase Cost Estimator**: Real-time down payment slider (10% to 50%), estimated 6.5% government stamp duty & registration fee calculation, multi-colored principal/interest amortization bar, and total cash outflow breakdown.
+- **📱 Sticky Mobile Quick-Action Bar**: Docked bottom action bar on mobile viewports featuring live price, direct WhatsApp prefilled chat, one-touch phone calling, instant tour booking, and wishlist toggle.
+- **📁 Client-Side CSV & JSON Export Engine**: Pure vanilla client-side export to Excel-compatible CSV (with UTF-8 BOM `\uFEFF`) and formatted JSON for listings, search results, and agent inventory management.
 - **📲 Interactive Property Share & QR Code**: 1-click sharing across WhatsApp (with pre-filled property specs), X/Twitter, LinkedIn, Facebook, Email, native Web Share API device fallback, and dynamic QR Code generation for instant mobile viewing.
 - **🖼️ Fullscreen Image Gallery Lightbox**: Immersive full-viewport lightbox viewer with keyboard navigation (Left/Right arrow keys, Escape), photo counters, and thumbnail filmstrip.
 - **🔔 Saved Search Alerts & Manager**: Save complex filter criteria with 1 click, track live matching inventory in real-time, and re-run searches instantly from the Dashboard.
@@ -119,6 +124,7 @@ The simulated client-side database manages state under the following keys:
 - `estatehub_recently_viewed`: Browsing history of viewed properties.
 - `estatehub_tours`: Scheduled in-person and video tour bookings.
 - `estatehub_saved_searches`: Saved search criteria and instant alert configurations.
+- `estatehub_price_alerts`: Price drop subscriptions with target thresholds and contact channels.
 - `estatehub_currency`: Selected display currency (INR, USD, EUR, AED, GBP).
 - `estatehub_area_unit`: Selected measurement unit (`sqft`, `sqm`, `sqyd`).
 - `estatehub_view_mode`: Preferred catalog layout (`grid` or `list`).
