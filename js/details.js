@@ -33,6 +33,7 @@ const PropertyDetailsController = {
     this.initInquiryForm();
     this.initReviews();
     this.initNeighborhood();
+    this.initVirtualTour();
     this.renderSimilarProperties();
 
     // Record viewing & render recently viewed
@@ -1212,6 +1213,305 @@ const PropertyDetailsController = {
     App.closeModal("priceAlertModal");
     this.updatePriceAlertBtnState();
     App.showToast("Price Drop Alert activated! You'll be notified automatically on market reductions.", "success", 4500);
+  },
+
+  currentRoomKey: "living",
+
+  /**
+   * Generates room specifications and interactive hotspots tailored to property.
+   */
+  getVirtualRoomsData() {
+    const p = this.property || {};
+    const img1 = (p.images && p.images[0]) || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80";
+    const img2 = (p.images && p.images[1]) || "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80";
+    const img3 = (p.images && p.images[2]) || "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=80";
+
+    return {
+      living: {
+        id: "living",
+        name: "Living & Dining Hall",
+        icon: "🛋️",
+        dimensions: "24' x 16'",
+        sqftArea: 384,
+        ceiling: "11.5 ft Clear",
+        facing: "West (Golden Sunset View)",
+        image: img1,
+        hotspots: [
+          {
+            x: 28,
+            y: 50,
+            title: "Italian Botticino Marble",
+            desc: "Full-slab imported Italian marble flooring with seamless diamond-polished acoustic underlay."
+          },
+          {
+            x: 65,
+            y: 42,
+            title: "Schüco Soundproof Glazing",
+            desc: "Double-glazed acoustic German glass providing 99% UV heat block and 42dB noise insulation."
+          },
+          {
+            x: 82,
+            y: 75,
+            title: "Centralized VRV Inverter AC",
+            desc: "Whisper-quiet Daikin concealed air conditioning with multi-zone digital thermostats."
+          }
+        ],
+        features: [
+          { title: "Floor-to-Ceiling Vista", desc: "Wall-to-wall glass framing panoramic city and skyline horizons." },
+          { title: "Smart Home Automation", desc: "Pre-wired Lutron wireless scene control for motorized drapes and lighting." },
+          { title: "Acoustic Audio Integration", desc: "Concealed conduit infrastructure ready for Dolby Atmos 7.2.4 surround setup." }
+        ]
+      },
+      master: {
+        id: "master",
+        name: "Master Suite Sanctuary",
+        icon: "🛏️",
+        dimensions: "18' x 15'",
+        sqftArea: 270,
+        ceiling: "11.0 ft Clear",
+        facing: "South-West (Tranquil Garden/Sea)",
+        image: img2,
+        hotspots: [
+          {
+            x: 25,
+            y: 52,
+            title: "European Herringbone Wood",
+            desc: "Natural engineered oak hardwood flooring with scratch-resistant matte lacquer."
+          },
+          {
+            x: 74,
+            y: 45,
+            title: "Poliform Walk-In Closet",
+            desc: "Italian-crafted wardrobe system with soft-closing smoked glass doors and integrated sensor LED lighting."
+          },
+          {
+            x: 52,
+            y: 78,
+            title: "Master Smart Touch Panel",
+            desc: "Bedside control hub managing motorized blackout shades, temperature, and intercom."
+          }
+        ],
+        features: [
+          { title: "En-Suite Spa Bath", desc: "Equipped with freestanding deep-soaking bathtub and rain shower tower." },
+          { title: "Private Deck Access", desc: "Direct sliding access to private sunrise morning coffee balcony." },
+          { title: "Vanity & Valuables Safe", desc: "Custom dressing alcove with illuminated magnifying mirror and biometric safe." }
+        ]
+      },
+      kitchen: {
+        id: "kitchen",
+        name: "Gourmet Designer Kitchen",
+        icon: "🍳",
+        dimensions: "16' x 12'",
+        sqftArea: 192,
+        ceiling: "10.5 ft Clear",
+        facing: "East (Vastu Compliant Sunrise)",
+        image: img3,
+        hotspots: [
+          {
+            x: 35,
+            y: 58,
+            title: "Calacatta Gold Quartz Island",
+            desc: "Stain-proof 20mm antimicrobial quartz countertop with flush breakfast bar."
+          },
+          {
+            x: 68,
+            y: 38,
+            title: "Integrated German Appliances",
+            desc: "Built-in oven, microwave, induction hob, and silent island chimney exhaust."
+          },
+          {
+            x: 84,
+            y: 65,
+            title: "Blum Motion Hardware",
+            desc: "Austrian soft-close lift systems and heavy-duty 65kg pantry pullout drawers."
+          }
+        ],
+        features: [
+          { title: "Dual Basin Preparation Area", desc: "Franke granite undermount sinks with pull-out mixer spray faucets." },
+          { title: "Separate Wet Utility", desc: "Dedicated utility bay with washer/dryer hookups and service entry door." },
+          { title: "PNG Piped Gas Network", desc: "Approved piped gas supply line with automated gas leak detection valve." }
+        ]
+      },
+      deck: {
+        id: "deck",
+        name: "Sky Deck & Balcony",
+        icon: "🌅",
+        dimensions: "22' x 10'",
+        sqftArea: 220,
+        ceiling: "Open Sky",
+        facing: "West (Breathtaking Sunsets)",
+        image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+        hotspots: [
+          {
+            x: 30,
+            y: 60,
+            title: "Composite Wood Decking",
+            desc: "Eco-friendly, slip-resistant, weather-tested composite wood plank flooring."
+          },
+          {
+            x: 62,
+            y: 44,
+            title: "Frameless Glass Balustrade",
+            desc: "15mm tempered structural safety glass with zero visual metal obstruction."
+          },
+          {
+            x: 82,
+            y: 70,
+            title: "Sunset Barbecue Hookup",
+            desc: "Exterior weatherproof electrical sockets, water faucet, and barbecue grill point."
+          }
+        ],
+        features: [
+          { title: "Private Jacuzzi Provisions", desc: "Engineered reinforced slab designed for private plunge tub or hydrotherapy spa." },
+          { title: "Automated Vertical Garden", desc: "Micro-drip irrigation system for perimeter green foliage and flowering plants." },
+          { title: "Concealed Drainage", desc: "Heavy-monsoon gutter channels preventing water backflow into living quarters." }
+        ]
+      },
+      study: {
+        id: "study",
+        name: "Study & Guest Bedroom",
+        icon: "💼",
+        dimensions: "15' x 12'",
+        sqftArea: 180,
+        ceiling: "11.0 ft Clear",
+        facing: "North (Soft Diffused Natural Daylight)",
+        image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80",
+        hotspots: [
+          {
+            x: 32,
+            y: 48,
+            title: "Acoustic Fluted Paneling",
+            desc: "Natural oak acoustic slat wood wall preventing sound echo on conference calls."
+          },
+          {
+            x: 75,
+            y: 38,
+            title: "Gigabit Fiber Termination",
+            desc: "Direct dual-broadband LAN drops and enterprise Wi-Fi 6 ceiling access point."
+          },
+          {
+            x: 58,
+            y: 68,
+            title: "Custom Floating Bookshelf",
+            desc: "Architect-designed wall-mounted storage with soft warm ambient backlighting."
+          }
+        ],
+        features: [
+          { title: "Dual Purpose Architecture", desc: "Functions seamlessly as an executive office or luxurious private guest room." },
+          { title: "Dedicated 3-Piece Bath", desc: "En-suite bathroom equipped with premium Grohe fixtures and shower cubicle." },
+          { title: "Courtyard Garden Outlook", desc: "Double-glazed casement window opening towards serene landscaped green courtyard." }
+        ]
+      }
+    };
+  },
+
+  /**
+   * Initializes the Interactive Floor Plan & Room Tour.
+   */
+  initVirtualTour() {
+    const nav = document.getElementById("virtualRoomNav");
+    if (!nav) return;
+
+    const rooms = this.getVirtualRoomsData();
+    const roomKeys = Object.keys(rooms);
+
+    nav.innerHTML = roomKeys.map((key, idx) => {
+      const r = rooms[key];
+      return `
+        <button type="button" class="virtual-room-btn ${idx === 0 ? 'active' : ''}" data-room="${key}" onclick="PropertyDetailsController.selectRoom('${key}')">
+          <span style="font-size: 1.1rem; line-height: 1;">${r.icon}</span>
+          <span>${r.name}</span>
+        </button>
+      `;
+    }).join("");
+
+    this.selectRoom(roomKeys[0]);
+
+    window.addEventListener("areaUnitChanged", () => {
+      if (this.currentRoomKey) {
+        this.renderRoomDetails(this.currentRoomKey);
+      }
+    });
+  },
+
+  /**
+   * Selects a room in the virtual tour viewer.
+   */
+  selectRoom(roomKey) {
+    this.currentRoomKey = roomKey;
+    const rooms = this.getVirtualRoomsData();
+    const room = rooms[roomKey];
+    if (!room) return;
+
+    // Update active button state
+    document.querySelectorAll(".virtual-room-btn").forEach(btn => {
+      if (btn.getAttribute("data-room") === roomKey) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+
+    this.renderRoomDetails(roomKey);
+  },
+
+  /**
+   * Renders room photo, hotspots, specs, and feature highlights.
+   */
+  renderRoomDetails(roomKey) {
+    const rooms = this.getVirtualRoomsData();
+    const room = rooms[roomKey];
+    if (!room) return;
+
+    const imgEl = document.getElementById("virtualTourRoomImg");
+    const titleEl = document.getElementById("virtualTourRoomTitle");
+    const facingEl = document.getElementById("virtualTourRoomFacing");
+    const dimEl = document.getElementById("virtualTourDimensions");
+    const areaEl = document.getElementById("virtualTourArea");
+    const ceilingEl = document.getElementById("virtualTourCeiling");
+    const hotspotsLayer = document.getElementById("virtualTourHotspots");
+    const detailsGrid = document.getElementById("virtualTourRoomDetails");
+
+    if (imgEl) {
+      imgEl.src = room.image;
+      imgEl.alt = room.name;
+    }
+    if (titleEl) titleEl.textContent = room.name;
+    if (facingEl) facingEl.textContent = `Facing: ${room.facing}`;
+    if (dimEl) dimEl.textContent = room.dimensions;
+    if (areaEl) areaEl.textContent = App.formatArea(room.sqftArea);
+    if (ceilingEl) ceilingEl.textContent = room.ceiling;
+
+    // Render interactive hotspots
+    if (hotspotsLayer) {
+      hotspotsLayer.innerHTML = room.hotspots.map((h, i) => `
+        <div class="vt-hotspot" style="left: ${h.x}%; top: ${h.y}%;" tabindex="0">
+          <span class="vt-hotspot-pulse"></span>
+          <span class="vt-hotspot-dot">${i + 1}</span>
+          <div class="vt-hotspot-popover">
+            <h5 class="vt-popover-title">${h.title}</h5>
+            <p class="vt-popover-desc">${h.desc}</p>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // Render features grid
+    if (detailsGrid) {
+      detailsGrid.innerHTML = room.features.map(f => `
+        <div class="vt-feature-card">
+          <div class="vt-feature-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div>
+            <h4 class="vt-feature-title">${f.title}</h4>
+            <p class="vt-feature-desc">${f.desc}</p>
+          </div>
+        </div>
+      `).join("");
+    }
   }
 };
 

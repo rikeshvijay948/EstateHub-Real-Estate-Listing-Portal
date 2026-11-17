@@ -239,6 +239,71 @@
             </div>
           </div>
 
+          <!-- Interactive Floor Plan & Virtual Room Tour Card -->
+          <div id="virtualTourCard" class="details-card virtual-tour-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="background-color: var(--primary); color: #fff; width: 38px; height: 38px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="details-card-title" style="margin-bottom: 0.25rem;">Interactive Room Tour &amp; Floor Plan</h2>
+                  <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Explore interior spaces, room dimensions, specifications, and architectural hotspots</p>
+                </div>
+              </div>
+              <span class="badge badge-sale" style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; padding: 0.35rem 0.65rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                Virtual Room Explorer
+              </span>
+            </div>
+
+            <!-- Room Navigation Pills -->
+            <div class="virtual-room-nav" id="virtualRoomNav">
+              <!-- Dynamically populated room buttons -->
+            </div>
+
+            <!-- Virtual Tour Viewer Display with Hotspots -->
+            <div class="virtual-tour-viewer" id="virtualTourViewer">
+              <img id="virtualTourRoomImg" src="" alt="Virtual Room View" class="virtual-tour-room-img" />
+              <div class="virtual-tour-overlay"></div>
+              
+              <!-- Pulsating Interactive Hotspots Container -->
+              <div id="virtualTourHotspots" class="virtual-tour-hotspots-layer">
+                <!-- Rendered dynamically -->
+              </div>
+
+              <!-- Quick Room Info Overlay Bar -->
+              <div class="virtual-tour-meta-bar">
+                <div class="virtual-tour-room-title-wrap">
+                  <h3 id="virtualTourRoomTitle" style="font-size: 1.15rem; font-weight: 800; color: #fff; margin: 0;">Room Name</h3>
+                  <span id="virtualTourRoomFacing" style="font-size: 0.8rem; color: #cbd5e1;">Facing: South-West</span>
+                </div>
+                <div class="virtual-tour-specs-badges">
+                  <div class="vt-spec-badge">
+                    <span class="vt-spec-label">Dimensions</span>
+                    <strong id="virtualTourDimensions">20' x 16'</strong>
+                  </div>
+                  <div class="vt-spec-badge">
+                    <span class="vt-spec-label">Carpet Area</span>
+                    <strong id="virtualTourArea">320 sq.ft</strong>
+                  </div>
+                  <div class="vt-spec-badge">
+                    <span class="vt-spec-label">Ceiling Height</span>
+                    <strong id="virtualTourCeiling">11 ft Clear</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Room Feature Highlights Grid -->
+            <div id="virtualTourRoomDetails" class="virtual-tour-details-grid" style="margin-top: 1.25rem;">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
           <!-- Interactive Mortgage & EMI Calculator Card -->
           <div id="emiCalculatorCard" class="details-card calculator-card">
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem;">
