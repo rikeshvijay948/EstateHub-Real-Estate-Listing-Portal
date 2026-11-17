@@ -2113,6 +2113,59 @@ ul, ol {
   color: var(--brand);
 }
 
+/* Mortgage Breakdown Visual Stacked Bar & Legend */
+.calc-stacked-bar {
+  display: flex;
+  height: 14px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background-color: var(--border);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.calc-seg-down {
+  background-color: #10b981;
+  transition: width 0.25s ease;
+}
+
+.calc-seg-loan {
+  background-color: var(--brand);
+  transition: width 0.25s ease;
+}
+
+.calc-seg-interest {
+  background-color: #f59e0b;
+  transition: width 0.25s ease;
+}
+
+.calc-seg-taxes {
+  background-color: #8b5cf6;
+  transition: width 0.25s ease;
+}
+
+.calc-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.calc-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.calc-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
 /* Agent Sidebar Card */
 .agent-card-sticky {
   background: var(--bg-surface);

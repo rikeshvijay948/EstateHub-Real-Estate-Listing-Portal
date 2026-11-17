@@ -382,7 +382,7 @@ const PropertyDetailsController = {
   },
 
   /**
-   * Initializes Real-Time EMI / Loan Calculator.
+   * Initializes Real-Time Mortgage & Cost Breakdown Calculator.
    */
   initEmiCalculator() {
     const p = this.property;
@@ -393,44 +393,113 @@ const PropertyDetailsController = {
       return;
     }
 
+    const downPaymentPctInput = document.getElementById("calcDownPaymentPct");
     const loanAmountInput = document.getElementById("calcLoanAmount");
     const interestRateInput = document.getElementById("calcInterestRate");
     const tenureInput = document.getElementById("calcTenure");
 
+    const downPaymentDisplay = document.getElementById("calcDownPaymentVal");
     const loanDisplay = document.getElementById("calcLoanAmountVal");
     const rateDisplay = document.getElementById("calcInterestRateVal");
     const tenureDisplay = document.getElementById("calcTenureVal");
     const emiOutput = document.getElementById("calcMonthlyEmi");
     const totalInterestOutput = document.getElementById("calcTotalInterest");
+    const totalRepaymentOutput = document.getElementById("calcTotalRepayment");
+    const totalOutflowOutput = document.getElementById("calcTotalOutflowVal");
 
-    // Set Default Loan Amount to 80% of Property Value
-    const defaultPrincipal = Math.round(p.price * 0.8);
+    // Bars
+    const barDown = document.getElementById("barDown");
+    const barLoan = document.getElementById("barLoan");
+    const barInterest = document.getElementById("barInterest");
+    const barTaxes = document.getElementById("barTaxes");
+
+    // Legends
+    const legendDownVal = document.getElementById("legendDownVal");
+    const legendDownPct = document.getElementById("legendDownPct");
+    const legendLoanVal = document.getElementById("legendLoanVal");
+    const legendLoanPct = document.getElementById("legendLoanPct");
+    const legendInterestVal = document.getElementById("legendInterestVal");
+    const legendInterestPct = document.getElementById("legendInterestPct");
+    const legendTaxesVal = document.getElementById("legendTaxesVal");
+    const legendTaxesPct = document.getElementById("legendTaxesPct");
+
+    // Initialize values based on property price
+    const initialDownPct = downPaymentPctInput ? Number(downPaymentPctInput.value) : 20;
+    const initialDownAmount = Math.round(p.price * (initialDownPct / 100));
+    const initialLoanAmount = p.price - initialDownAmount;
+
     if (loanAmountInput) {
-      loanAmountInput.max = p.price;
-      loanAmountInput.value = defaultPrincipal;
+      loanAmountInput.min = Math.round(p.price * 0.1);
+      loanAmountInput.max = Math.round(p.price * 0.9);
+      loanAmountInput.step = p.price > 50000000 ? 500000 : 100000;
+      loanAmountInput.value = initialLoanAmount;
     }
 
     const calculate = () => {
-      const P = Number(loanAmountInput ? loanAmountInput.value : defaultPrincipal);
+      const P = Number(loanAmountInput ? loanAmountInput.value : (p.price * 0.8));
+      const downAmount = Math.max(0, p.price - P);
       const r = Number(interestRateInput ? interestRateInput.value : 8.5) / 12 / 100;
       const n = Number(tenureInput ? tenureInput.value : 20) * 12;
 
       // EMI Formula = P * r * (1 + r)^n / ((1 + r)^n - 1)
       const emi = Math.round((P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
-      const totalAmount = emi * n;
-      const totalInterest = totalAmount - P;
+      const totalLoanRepayment = emi * n;
+      const totalInterest = Math.max(0, totalLoanRepayment - P);
+      const stampDutyAndReg = Math.round(p.price * 0.065); // ~6.5% standard stamp duty & reg fees
+      const totalOutflow = downAmount + P + totalInterest + stampDutyAndReg;
 
+      // Update text values
+      if (downPaymentDisplay) downPaymentDisplay.textContent = `${App.formatPrice(downAmount, "sale")} (${Math.round((downAmount / p.price) * 100)}%)`;
       if (loanDisplay) loanDisplay.textContent = App.formatPrice(P, "sale");
-      if (rateDisplay) rateDisplay.textContent = `${interestRateInput.value}%`;
-      if (tenureDisplay) tenureDisplay.textContent = `${tenureInput.value} Years`;
+      if (rateDisplay && interestRateInput) rateDisplay.textContent = `${interestRateInput.value}%`;
+      if (tenureDisplay && tenureInput) tenureDisplay.textContent = `${tenureInput.value} Years`;
 
       if (emiOutput) emiOutput.innerHTML = App.formatPrice(emi, "rent");
       if (totalInterestOutput) totalInterestOutput.textContent = App.formatPrice(totalInterest, "sale");
+      if (totalRepaymentOutput) totalRepaymentOutput.textContent = App.formatPrice(totalLoanRepayment, "sale");
+      if (totalOutflowOutput) totalOutflowOutput.textContent = App.formatPrice(totalOutflow, "sale");
+
+      // Percentages for stacked bar & legend
+      const pctDown = ((downAmount / totalOutflow) * 100).toFixed(1);
+      const pctLoan = ((P / totalOutflow) * 100).toFixed(1);
+      const pctInterest = ((totalInterest / totalOutflow) * 100).toFixed(1);
+      const pctTaxes = ((stampDutyAndReg / totalOutflow) * 100).toFixed(1);
+
+      if (barDown) barDown.style.width = `${pctDown}%`;
+      if (barLoan) barLoan.style.width = `${pctLoan}%`;
+      if (barInterest) barInterest.style.width = `${pctInterest}%`;
+      if (barTaxes) barTaxes.style.width = `${pctTaxes}%`;
+
+      if (legendDownVal) legendDownVal.textContent = App.formatPrice(downAmount, "sale");
+      if (legendDownPct) legendDownPct.textContent = `${pctDown}%`;
+      if (legendLoanVal) legendLoanVal.textContent = App.formatPrice(P, "sale");
+      if (legendLoanPct) legendLoanPct.textContent = `${pctLoan}%`;
+      if (legendInterestVal) legendInterestVal.textContent = App.formatPrice(totalInterest, "sale");
+      if (legendInterestPct) legendInterestPct.textContent = `${pctInterest}%`;
+      if (legendTaxesVal) legendTaxesVal.textContent = App.formatPrice(stampDutyAndReg, "sale");
+      if (legendTaxesPct) legendTaxesPct.textContent = `${pctTaxes}%`;
     };
 
     this.recalculateEmi = calculate;
 
-    if (loanAmountInput) loanAmountInput.addEventListener("input", calculate);
+    if (downPaymentPctInput) {
+      downPaymentPctInput.addEventListener("input", (e) => {
+        const pct = Number(e.target.value);
+        const down = Math.round(p.price * (pct / 100));
+        if (loanAmountInput) loanAmountInput.value = p.price - down;
+        calculate();
+      });
+    }
+
+    if (loanAmountInput) {
+      loanAmountInput.addEventListener("input", (e) => {
+        const loan = Number(e.target.value);
+        const down = Math.max(0, p.price - loan);
+        if (downPaymentPctInput) downPaymentPctInput.value = Math.round((down / p.price) * 100);
+        calculate();
+      });
+    }
+
     if (interestRateInput) interestRateInput.addEventListener("input", calculate);
     if (tenureInput) tenureInput.addEventListener("input", calculate);
 
