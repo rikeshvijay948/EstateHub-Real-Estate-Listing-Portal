@@ -658,6 +658,49 @@ const PropertiesController = {
     StorageManager.addSavedSearch(searchData);
     App.closeModal("saveSearchModal");
     App.showToast("Search alert saved! Manage it anytime in your Dashboard.", "success", 4000);
+  },
+
+  /**
+   * Exports currently filtered search results to CSV spreadsheet.
+   */
+  exportResultsCsv() {
+    const list = this.filteredProperties;
+    if (!list || list.length === 0) {
+      App.showToast("No search results to export.", "warning");
+      return;
+    }
+
+    const timestamp = new Date().toISOString().split("T")[0];
+    const headers = [
+      "ID",
+      "Title",
+      "Listing Type",
+      "Property Type",
+      "Price (INR)",
+      "City",
+      "State",
+      "Bedrooms",
+      "Bathrooms",
+      "Area (sqft)",
+      "Furnishing"
+    ];
+
+    const rows = list.map(p => [
+      p.id,
+      p.title,
+      p.listingType === "rent" ? "Rent" : "Sale",
+      p.propertyType,
+      p.price,
+      p.city,
+      p.state,
+      p.bedrooms || 0,
+      p.bathrooms || 0,
+      p.area || 0,
+      p.furnishedStatus || "Semi-Furnished"
+    ]);
+
+    App.exportToCsv(`estatehub-search-results-${timestamp}.csv`, headers, rows);
+    App.showToast(`Exported ${list.length} search results to CSV!`, "success");
   }
 };
 

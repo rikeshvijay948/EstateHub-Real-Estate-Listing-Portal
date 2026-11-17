@@ -419,6 +419,72 @@ const DashboardController = {
     this.renderSavedSearchesTable();
   },
 
+  toggleExportMenu(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById("dashboardExportDropdown");
+    if (!menu) return;
+    const isShowing = menu.style.display === "block";
+    menu.style.display = isShowing ? "none" : "block";
+  },
+
+  exportProperties(format = "csv") {
+    const properties = StorageManager.getProperties();
+    const menu = document.getElementById("dashboardExportDropdown");
+    if (menu) menu.style.display = "none";
+
+    if (properties.length === 0) {
+      App.showToast("No properties to export.", "warning");
+      return;
+    }
+
+    const timestamp = new Date().toISOString().split("T")[0];
+
+    if (format === "json") {
+      App.exportToJson(`estatehub-properties-${timestamp}.json`, properties);
+      App.showToast(`Exported ${properties.length} properties as JSON.`, "success");
+      return;
+    }
+
+    const headers = [
+      "ID",
+      "Title",
+      "Listing Type",
+      "Property Type",
+      "Price (INR)",
+      "City",
+      "State",
+      "Address",
+      "Bedrooms",
+      "Bathrooms",
+      "Area (sqft)",
+      "Furnishing",
+      "Featured",
+      "Agent Name",
+      "Agent Phone"
+    ];
+
+    const rows = properties.map(p => [
+      p.id,
+      p.title,
+      p.listingType === "rent" ? "Rent" : "Sale",
+      p.propertyType,
+      p.price,
+      p.city,
+      p.state,
+      p.address,
+      p.bedrooms || 0,
+      p.bathrooms || 0,
+      p.area || 0,
+      p.furnishedStatus || "Semi-Furnished",
+      p.featured ? "Yes" : "No",
+      p.agent ? p.agent.name : "",
+      p.agent ? p.agent.phone : ""
+    ]);
+
+    App.exportToCsv(`estatehub-inventory-${timestamp}.csv`, headers, rows);
+    App.showToast(`Exported ${properties.length} properties to CSV spreadsheet.`, "success");
+  },
+
   /**
    * Binds dashboard events.
    */
@@ -429,6 +495,17 @@ const DashboardController = {
         this.confirmDeleteProperty();
       });
     }
+
+    // Close export dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      const menu = document.getElementById("dashboardExportDropdown");
+      const btn = document.getElementById("exportDashboardBtn");
+      if (menu && menu.style.display === "block") {
+        if (!btn || (!btn.contains(e.target) && !menu.contains(e.target))) {
+          menu.style.display = "none";
+        }
+      }
+    });
 
     // Tab switching
     document.querySelectorAll(".dash-tab-btn").forEach(btn => {

@@ -908,6 +908,54 @@ const App = {
     if (homeSection) homeSection.style.display = "none";
     const detailSection = document.getElementById("recentlyViewedSection");
     if (detailSection) detailSection.style.display = "none";
+  },
+
+  /**
+   * Client-side CSV Exporter.
+   * Prepends UTF-8 BOM (\uFEFF) for seamless Microsoft Excel and Google Sheets compatibility.
+   * @param {string} filename
+   * @param {string[]} headers
+   * @param {Array<Array<any>>} rows
+   */
+  exportToCsv(filename, headers, rows) {
+    const escapeVal = (val) => {
+      if (val === null || val === undefined) return '""';
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    };
+
+    const csvContent = "\uFEFF" + [
+      headers.map(escapeVal).join(","),
+      ...rows.map(row => row.map(escapeVal).join(","))
+    ].join("\r\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename.endsWith(".csv") ? filename : `${filename}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  },
+
+  /**
+   * Client-side JSON Exporter.
+   * @param {string} filename
+   * @param {any} data
+   */
+  exportToJson(filename, data) {
+    const jsonStr = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename.endsWith(".json") ? filename : `${filename}.json`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 };
 
