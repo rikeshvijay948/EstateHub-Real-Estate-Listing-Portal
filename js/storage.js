@@ -14,7 +14,8 @@ const STORAGE_KEYS = {
   RECENTLY_VIEWED: "estatehub_recently_viewed",
   TOURS: "estatehub_tours",
   AREA_UNIT: "estatehub_area_unit",
-  SAVED_SEARCHES: "estatehub_saved_searches"
+  SAVED_SEARCHES: "estatehub_saved_searches",
+  PRICE_ALERTS: "estatehub_price_alerts"
 };
 
 const StorageManager = {
@@ -43,6 +44,9 @@ const StorageManager = {
       }
       if (!localStorage.getItem(STORAGE_KEYS.SAVED_SEARCHES) && typeof INITIAL_SAVED_SEARCHES !== "undefined") {
         localStorage.setItem(STORAGE_KEYS.SAVED_SEARCHES, JSON.stringify(INITIAL_SAVED_SEARCHES));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.PRICE_ALERTS) && typeof INITIAL_PRICE_ALERTS !== "undefined") {
+        localStorage.setItem(STORAGE_KEYS.PRICE_ALERTS, JSON.stringify(INITIAL_PRICE_ALERTS));
       }
     } catch (e) {
       console.error("Error initializing EstateHub Storage:", e);
@@ -656,6 +660,56 @@ const StorageManager = {
   },
 
   /* ==========================================================
+     PRICE DROP ALERTS CRUD
+     ========================================================== */
+  getPriceAlerts() {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.PRICE_ALERTS);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      console.error("Error reading price alerts:", e);
+      return [];
+    }
+  },
+
+  hasPriceAlert(propertyId, userEmail) {
+    if (!propertyId) return false;
+    const alerts = this.getPriceAlerts();
+    return alerts.some(a => String(a.propertyId) === String(propertyId) && (!userEmail || a.userEmail === userEmail));
+  },
+
+  addPriceAlert(alertData) {
+    const alerts = this.getPriceAlerts();
+    const newAlert = {
+      id: "alert-" + Date.now(),
+      propertyId: alertData.propertyId,
+      propertyTitle: alertData.propertyTitle || "Untitled Property",
+      propertyPrice: Number(alertData.propertyPrice) || 0,
+      propertyImage: alertData.propertyImage || "",
+      propertyCity: alertData.propertyCity || "",
+      userEmail: alertData.userEmail || "",
+      userPhone: alertData.userPhone || "",
+      threshold: alertData.threshold || "any",
+      thresholdLabel: alertData.thresholdLabel || "Any Price Drop",
+      targetPrice: Number(alertData.targetPrice) || Number(alertData.propertyPrice) || 0,
+      notificationMethod: alertData.notificationMethod || "email_whatsapp",
+      status: "active",
+      createdAt: new Date().toISOString()
+    };
+    alerts.unshift(newAlert);
+    localStorage.setItem(STORAGE_KEYS.PRICE_ALERTS, JSON.stringify(alerts));
+    window.dispatchEvent(new CustomEvent("priceAlertsUpdated", { detail: newAlert }));
+    return newAlert;
+  },
+
+  deletePriceAlert(id) {
+    const alerts = this.getPriceAlerts();
+    const filtered = alerts.filter(a => String(a.id) !== String(id));
+    localStorage.setItem(STORAGE_KEYS.PRICE_ALERTS, JSON.stringify(filtered));
+    window.dispatchEvent(new CustomEvent("priceAlertsUpdated", { detail: { id } }));
+  },
+
+  /* ==========================================================
      DATA RESET & REFRESH
      ========================================================== */
 
@@ -675,6 +729,9 @@ const StorageManager = {
     }
     if (typeof INITIAL_SAVED_SEARCHES !== "undefined") {
       localStorage.setItem(STORAGE_KEYS.SAVED_SEARCHES, JSON.stringify(INITIAL_SAVED_SEARCHES));
+    }
+    if (typeof INITIAL_PRICE_ALERTS !== "undefined") {
+      localStorage.setItem(STORAGE_KEYS.PRICE_ALERTS, JSON.stringify(INITIAL_PRICE_ALERTS));
     }
     localStorage.setItem(STORAGE_KEYS.RECENTLY_VIEWED, JSON.stringify([]));
     window.location.reload();

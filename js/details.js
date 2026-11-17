@@ -38,6 +38,10 @@ const PropertyDetailsController = {
     // Record viewing & render recently viewed
     StorageManager.addRecentlyViewed(this.property.id);
     this.renderRecentlyViewed();
+
+    window.addEventListener("priceAlertsUpdated", () => {
+      this.updatePriceAlertBtnState();
+    });
   },
 
   /**
@@ -102,6 +106,9 @@ const PropertyDetailsController = {
       if (isFav) favBtn.classList.add("active");
       favBtn.onclick = (e) => App.handleFavoriteClick(e, p.id);
     }
+
+    // Price Drop Alert Button State
+    this.updatePriceAlertBtnState();
 
     // Specifications Grid (8 Items)
     const specsGrid = document.getElementById("specsGrid");
@@ -1062,6 +1069,149 @@ const PropertyDetailsController = {
    */
   renderRecentlyViewed() {
     App.renderRecentlyViewedGrid("recentlyViewedGrid", "recentlyViewedSection", this.property.id);
+  },
+
+  /**
+   * Updates Price Alert buttons state (header and sidebar) based on subscription.
+   */
+  updatePriceAlertBtnState() {
+    if (!this.property) return;
+    const isSubscribed = StorageManager.hasPriceAlert(this.property.id);
+    const headerBtn = document.getElementById("openPriceAlertBtn");
+    const headerLabel = document.getElementById("priceAlertBtnLabel");
+    const sidebarLabel = document.getElementById("sidebarPriceAlertLabel");
+    const sidebarBtn = document.getElementById("sidebarPriceAlertBtn");
+
+    if (isSubscribed) {
+      if (headerBtn) {
+        headerBtn.classList.add("active");
+        headerBtn.style.color = "var(--success)";
+        headerBtn.style.borderColor = "var(--success)";
+      }
+      if (headerLabel) headerLabel.textContent = "Alert Active ✓";
+      if (sidebarLabel) sidebarLabel.textContent = "Price Alert Active ✓";
+      if (sidebarBtn) {
+        sidebarBtn.style.borderColor = "var(--success)";
+        sidebarBtn.style.color = "var(--success)";
+      }
+    } else {
+      if (headerBtn) {
+        headerBtn.classList.remove("active");
+        headerBtn.style.color = "";
+        headerBtn.style.borderColor = "";
+      }
+      if (headerLabel) headerLabel.textContent = "Price Alert";
+      if (sidebarLabel) sidebarLabel.textContent = "Track Price Drop";
+      if (sidebarBtn) {
+        sidebarBtn.style.borderColor = "";
+        sidebarBtn.style.color = "";
+      }
+    }
+  },
+
+  /**
+   * Opens Price Alert Modal and sets up initial values.
+   */
+  openPriceAlertModal() {
+    if (!this.property) return;
+    const titleEl = document.getElementById("priceAlertModalPropTitle");
+    const priceEl = document.getElementById("priceAlertModalPropPrice");
+    if (titleEl) titleEl.textContent = this.property.title;
+    if (priceEl) priceEl.innerHTML = App.formatPrice(this.property.price, this.property.listingType);
+
+    const user = Auth.getUser();
+    if (user) {
+      const emailInput = document.getElementById("priceAlertEmail");
+      const phoneInput = document.getElementById("priceAlertPhone");
+      if (emailInput && !emailInput.value) emailInput.value = user.email || "";
+      if (phoneInput && !phoneInput.value && user.phone) phoneInput.value = user.phone;
+    }
+
+    this.updateAlertTargetCalc();
+    App.openModal("priceAlertModal");
+  },
+
+  /**
+   * Recalculates dynamic target price trigger summary in modal.
+   */
+  updateAlertTargetCalc() {
+    if (!this.property) return;
+    const form = document.getElementById("priceAlertForm");
+    if (!form) return;
+
+    const thresholdInput = form.querySelector("input[name='threshold']:checked");
+    const threshold = thresholdInput ? thresholdInput.value : "any";
+    const customWrap = document.getElementById("customTargetPriceWrap");
+    const summaryEl = document.getElementById("priceAlertTargetSummary");
+    const currentPrice = this.property.price;
+
+    if (threshold === "custom") {
+      if (customWrap) customWrap.style.display = "block";
+      const customVal = Number(document.getElementById("customTargetPriceInput")?.value) || 0;
+      if (summaryEl) {
+        summaryEl.textContent = customVal > 0 ? `Alert when price drops below ${App.formatPrice(customVal, this.property.listingType)}` : "Please enter your desired target price";
+      }
+    } else {
+      if (customWrap) customWrap.style.display = "none";
+      if (threshold === "5") {
+        const target = Math.round(currentPrice * 0.95);
+        if (summaryEl) summaryEl.textContent = `Alert when price drops by 5% (below ${App.formatPrice(target, this.property.listingType)})`;
+      } else if (threshold === "10") {
+        const target = Math.round(currentPrice * 0.9);
+        if (summaryEl) summaryEl.textContent = `Alert when price drops by 10% (below ${App.formatPrice(target, this.property.listingType)})`;
+      } else {
+        if (summaryEl) summaryEl.textContent = `Any reduction below ${App.formatPrice(currentPrice, this.property.listingType)}`;
+      }
+    }
+  },
+
+  /**
+   * Handles price drop alert subscription form submission.
+   */
+  handlePriceAlertSubmit(e) {
+    e.preventDefault();
+    if (!this.property) return;
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const threshold = formData.get("threshold");
+    let thresholdLabel = "Any Price Cut";
+    let targetPrice = this.property.price;
+
+    if (threshold === "5") {
+      thresholdLabel = "5% Price Drop";
+      targetPrice = Math.round(this.property.price * 0.95);
+    } else if (threshold === "10") {
+      thresholdLabel = "10% Price Drop";
+      targetPrice = Math.round(this.property.price * 0.90);
+    } else if (threshold === "custom") {
+      const customVal = Number(document.getElementById("customTargetPriceInput")?.value) || 0;
+      if (customVal <= 0 || customVal >= this.property.price) {
+        App.showToast("Target price must be lower than the current asking price.", "warning");
+        return;
+      }
+      thresholdLabel = "Target " + App.formatPrice(customVal, this.property.listingType);
+      targetPrice = customVal;
+    }
+
+    const alertData = {
+      propertyId: this.property.id,
+      propertyTitle: this.property.title,
+      propertyPrice: this.property.price,
+      propertyImage: (this.property.images && this.property.images[0]) || "",
+      propertyCity: this.property.city || "",
+      userEmail: formData.get("userEmail"),
+      userPhone: formData.get("userPhone") || "",
+      threshold: threshold,
+      thresholdLabel: thresholdLabel,
+      targetPrice: targetPrice,
+      notificationMethod: formData.get("notificationMethod") || "email_whatsapp"
+    };
+
+    StorageManager.addPriceAlert(alertData);
+    App.closeModal("priceAlertModal");
+    this.updatePriceAlertBtnState();
+    App.showToast("Price Drop Alert activated! You'll be notified automatically on market reductions.", "success", 4500);
   }
 };
 

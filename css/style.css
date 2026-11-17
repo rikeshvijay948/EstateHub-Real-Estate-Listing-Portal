@@ -3370,6 +3370,22 @@ ul, ol {
   color: var(--brand);
 }
 
+/* --- Price Drop Alert Dialog Styling --- */
+.threshold-card {
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.threshold-card:hover {
+  border-color: var(--brand) !important;
+  background-color: var(--brand-light) !important;
+}
+
+.threshold-card:has(input:checked) {
+  border-color: var(--brand) !important;
+  background-color: var(--brand-light) !important;
+  box-shadow: 0 0 0 1px var(--brand);
+}
+
 
 
 

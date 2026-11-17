@@ -20,6 +20,7 @@ const DashboardController = {
     this.renderInquiriesTable();
     this.renderToursTable();
     this.renderSavedSearchesTable();
+    this.renderPriceAlertsTable();
     this.bindEvents();
 
     window.addEventListener("toursUpdated", () => {
@@ -29,6 +30,10 @@ const DashboardController = {
 
     window.addEventListener("savedSearchesUpdated", () => {
       this.renderSavedSearchesTable();
+    });
+
+    window.addEventListener("priceAlertsUpdated", () => {
+      this.renderPriceAlertsTable();
     });
   },
 
@@ -417,6 +422,106 @@ const DashboardController = {
     StorageManager.deleteSavedSearch(id);
     App.showToast("Saved search alert deleted.", "info");
     this.renderSavedSearchesTable();
+  },
+
+  /**
+   * Renders Active Price Drop Alerts Table.
+   */
+  renderPriceAlertsTable() {
+    const tbody = document.getElementById("dashboardPriceAlertsTbody");
+    const badge = document.getElementById("priceAlertsCountBadge");
+    if (!tbody) return;
+
+    const alerts = StorageManager.getPriceAlerts();
+
+    if (badge) {
+      badge.textContent = alerts.length;
+      badge.style.display = alerts.length > 0 ? "inline-block" : "none";
+    }
+
+    if (alerts.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔔</div>
+            <p style="margin: 0; font-size: 0.95rem;">No active price drop alerts right now.</p>
+            <p style="margin: 0.25rem 0 0.75rem; font-size: 0.8rem;">Browse properties and click "Price Alert" to track market discounts!</p>
+            <a href="./properties.html" class="btn btn-primary btn-sm">Explore Listings</a>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = alerts.map((a) => {
+      // Find up-to-date live property from storage
+      const liveProp = StorageManager.getPropertyById(a.propertyId);
+      const currentPrice = liveProp ? liveProp.price : a.propertyPrice;
+      const thumb = (liveProp && liveProp.images && liveProp.images[0]) || a.propertyImage || App.getFallbackImage();
+      const title = liveProp ? liveProp.title : a.propertyTitle;
+      const formattedCurrent = App.formatPrice(currentPrice, liveProp ? liveProp.listingType : "sale");
+      const formattedTarget = App.formatPrice(a.targetPrice, liveProp ? liveProp.listingType : "sale");
+
+      // Check if price has dropped below target
+      const isTriggered = liveProp && liveProp.price < a.propertyPrice;
+
+      const channelLabel = a.notificationMethod === "email" ? "✉️ Email" : "✉️ Email + 💬 WhatsApp";
+
+      return `
+        <tr>
+          <td>
+            <div class="table-prop-cell">
+              <img src="${thumb}" alt="${title}" class="table-prop-thumb" onerror="this.src='${App.getFallbackImage()}';" />
+              <div>
+                <a href="./property-details.html?id=${a.propertyId}" class="table-prop-title" style="font-weight: 700; color: var(--primary);">
+                  ${title}
+                </a>
+                <span class="table-prop-loc">${a.propertyCity || (liveProp ? liveProp.city : "India")}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <strong style="color: var(--text-main);">${formattedCurrent}</strong>
+          </td>
+          <td>
+            <span class="badge" style="background: rgba(59,130,246,0.1); color: var(--brand); font-size: 0.75rem; font-weight: 600;">
+              ${a.thresholdLabel || a.threshold}
+            </span>
+          </td>
+          <td>
+            <strong style="color: var(--brand);">${formattedTarget}</strong>
+          </td>
+          <td>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+              <div>${channelLabel}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); opacity: 0.85;">${a.userEmail}</div>
+            </div>
+          </td>
+          <td>
+            ${isTriggered
+              ? '<span class="badge badge-rent" style="font-size: 0.75rem; font-weight: 700;">🎉 Price Cut Detected!</span>'
+              : '<span class="badge badge-sale" style="font-size: 0.75rem; font-weight: 700;">● Active Tracking</span>'
+            }
+          </td>
+          <td>
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              <a href="./property-details.html?id=${a.propertyId}" class="btn btn-outline btn-xs" style="padding: 0.3rem 0.65rem; font-size: 0.78rem;" title="View Property">
+                View
+              </a>
+              <button class="btn btn-danger-outline btn-xs btn-icon-only" title="Unsubscribe Alert" onclick="DashboardController.deletePriceAlert('${a.id}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  },
+
+  deletePriceAlert(id) {
+    StorageManager.deletePriceAlert(id);
+    App.showToast("Price drop alert unsubscribed.", "info");
+    this.renderPriceAlertsTable();
   },
 
   toggleExportMenu(e) {

@@ -971,5 +971,42 @@ const INITIAL_SAVED_SEARCHES = [
   }
 ];
 
+// Initial sample price drop alerts
+const INITIAL_PRICE_ALERTS = [
+  {
+    id: "alert-1",
+    propertyId: "prop-1",
+    propertyTitle: "Luxurious 4 BHK Sea-Facing Penthouse",
+    propertyPrice: 185000000,
+    propertyImage: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80",
+    propertyCity: "Mumbai",
+    userEmail: "rahul.deshmukh@gmail.com",
+    userPhone: "+91 98200 11223",
+    threshold: "5",
+    thresholdLabel: "5% Price Drop",
+    targetPrice: 175750000,
+    notificationMethod: "email_whatsapp",
+    status: "active",
+    createdAt: "2026-11-02T11:00:00Z"
+  },
+  {
+    id: "alert-2",
+    propertyId: "prop-3",
+    propertyTitle: "Sea View 3 BHK High-Rise Flat in ECR",
+    propertyPrice: 19500000,
+    propertyImage: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=80",
+    propertyCity: "Chennai",
+    userEmail: "sanya.k@hotmail.com",
+    userPhone: "+91 99100 88776",
+    threshold: "any",
+    thresholdLabel: "Any Price Drop",
+    targetPrice: 19500000,
+    notificationMethod: "email",
+    status: "active",
+    createdAt: "2026-11-05T15:30:00Z"
+  }
+];
+
+
 
 

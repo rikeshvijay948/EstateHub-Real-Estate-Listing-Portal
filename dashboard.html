@@ -108,6 +108,15 @@
             <span id="savedSearchesCountBadge" class="badge badge-sale" style="margin-left: auto; font-size: 0.7rem; padding: 0.2rem 0.5rem; display: none;">0</span>
           </button>
 
+          <button type="button" class="dash-nav-link dash-tab-btn" data-tab="price-alerts">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            Price Drop Alerts
+            <span id="priceAlertsCountBadge" class="badge badge-sale" style="margin-left: auto; font-size: 0.7rem; padding: 0.2rem 0.5rem; display: none;">0</span>
+          </button>
+
           <a href="./add-property.html" class="dash-nav-link" style="color: var(--brand);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             + Add New Listing
@@ -316,6 +325,38 @@
                   </tr>
                 </thead>
                 <tbody id="dashboardSearchesTbody">
+                  <!-- Populated dynamically by js/dashboard.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: Price Drop Alerts Table -->
+        <div id="tab-price-alerts" class="dash-tab-pane" style="display: none;">
+          <div class="table-card">
+            <div class="table-header">
+              <div>
+                <h3 class="table-title">Active Price Drop Alerts</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Manage real-time price change alerts and track target bargains across properties</p>
+              </div>
+              <a href="./properties.html" class="btn btn-primary btn-sm">+ Browse Properties</a>
+            </div>
+
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Tracked Property</th>
+                    <th>Current Price</th>
+                    <th>Alert Rule</th>
+                    <th>Target Trigger Price</th>
+                    <th>Notification Channel</th>
+                    <th>Tracking Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardPriceAlertsTbody">
                   <!-- Populated dynamically by js/dashboard.js -->
                 </tbody>
               </table>
