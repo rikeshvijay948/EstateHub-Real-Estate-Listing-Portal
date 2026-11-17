@@ -195,6 +195,31 @@ const PropertyDetailsController = {
     if (agentRole) agentRole.textContent = agent.role;
     if (agentRating) agentRating.innerHTML = `★ ${agent.rating || 4.9} (${agent.reviewsCount || 25} Reviews)`;
     if (agentCallBtn) agentCallBtn.href = `tel:${(agent.phone || "").replace(/\s+/g, "")}`;
+
+    // Mobile Action Bar Setup
+    const mobilePrice = document.getElementById("mobileActionPrice");
+    const mobileType = document.getElementById("mobileActionType");
+    const mobileWaBtn = document.getElementById("mobileActionWaBtn");
+    const mobileCallBtn = document.getElementById("mobileActionCallBtn");
+    const mobileFavBtn = document.getElementById("mobileActionFavBtn");
+
+    if (mobilePrice) mobilePrice.innerHTML = App.formatPrice(p.price, p.listingType);
+    if (mobileType) mobileType.textContent = p.listingType === "rent" ? "For Rent" : "For Sale";
+
+    const cleanPhone = (agent.phone || "+919820154321").replace(/\D/g, "");
+    const waText = encodeURIComponent(`Hi ${agent.name}, I am interested in "${p.title}" (${p.city}) on EstateHub.`);
+    if (mobileWaBtn) mobileWaBtn.href = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${waText}`;
+    if (mobileCallBtn) mobileCallBtn.href = `tel:${cleanPhone}`;
+
+    if (mobileFavBtn) {
+      mobileFavBtn.classList.toggle("active", isFav);
+      mobileFavBtn.onclick = (e) => {
+        App.handleFavoriteClick(e, p.id);
+        const nowFav = StorageManager.isFavorite(p.id);
+        mobileFavBtn.classList.toggle("active", nowFav);
+        if (favBtn) favBtn.classList.toggle("active", nowFav);
+      };
+    }
   },
 
   isLightboxOpen: false,
